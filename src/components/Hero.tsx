@@ -135,6 +135,37 @@ export default function Hero() {
           <br />
           Produkcja wideo dla mediów i biznesu.
         </p>
+
+        {/* Mobile-only hero image */}
+        <div className="hero-mobile-img">
+          <img
+            src="https://picsum.photos/seed/film-reportaz/900/500"
+            alt="Produkcja wideo — Lotne Media"
+            loading="eager"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to top, rgba(13,13,13,0.45) 0%, transparent 60%)",
+            }}
+          />
+          <span
+            style={{
+              position: "absolute",
+              bottom: 14,
+              left: 16,
+              fontFamily: "var(--font-sans)",
+              fontSize: 9,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.7)",
+            }}
+          >
+            Lotne Media
+          </span>
+        </div>
       </div>
 
       {/* Right column — asymmetric images */}

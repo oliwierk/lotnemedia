@@ -313,41 +313,6 @@ export default function Zespol() {
         ))}
       </div>
 
-      {/* Bottom quote */}
-      <div
-        style={{
-          marginTop: "100px",
-          paddingTop: "60px",
-          borderTop: "1px solid rgba(13,13,13,0.1)",
-          maxWidth: "560px",
-        }}
-      >
-        <p
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "clamp(18px, 2vw, 24px)",
-            fontWeight: 300,
-            fontStyle: "italic",
-            lineHeight: 1.65,
-            color: "var(--ink)",
-            marginBottom: "20px",
-          }}
-        >
-          „Tworzymy z pasją do uchwycenia ulotnych chwil, które chcesz zachować
-          na dłużej…"
-        </p>
-        <span
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "12px",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            color: "var(--ink-muted)",
-          }}
-        >
-          Ilona Ptak, Lotne Media
-        </span>
-      </div>
     </section>
   );
 }

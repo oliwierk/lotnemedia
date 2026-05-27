@@ -13,6 +13,7 @@ const links = [
 
 export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -31,6 +32,20 @@ export default function Navbar() {
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuRef.current) return;
+    const items = menuRef.current.querySelectorAll(".menu-link");
+    if (menuOpen) {
+      gsap.fromTo(
+        items,
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", stagger: 0.07, delay: 0.12 }
+      );
+    } else {
+      gsap.set(items, { opacity: 0, y: 0 });
+    }
   }, [menuOpen]);
 
   const scrollTo = (href: string) => {
@@ -136,12 +151,14 @@ export default function Navbar() {
 
       {/* Mobile menu overlay */}
       <div
+        ref={menuRef}
         className={`mobile-menu${menuOpen ? " open" : ""}`}
         aria-hidden={!menuOpen}
       >
         {links.map((l) => (
           <button
             key={l.label}
+            className="menu-link"
             onClick={() => scrollTo(l.href)}
             style={{
               background: "none",
@@ -156,12 +173,14 @@ export default function Navbar() {
               padding: "10px 0",
               textAlign: "left",
               lineHeight: 1.1,
+              opacity: 0,
             }}
           >
             {l.label}
           </button>
         ))}
         <span
+          className="menu-link"
           style={{
             marginTop: "48px",
             fontFamily: "var(--font-sans)",
@@ -169,6 +188,7 @@ export default function Navbar() {
             letterSpacing: "0.16em",
             textTransform: "uppercase",
             color: "var(--ink-muted)",
+            opacity: 0,
           }}
         >
           Lotne Media · Katowice
