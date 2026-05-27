@@ -89,10 +89,10 @@ export default function Footer() {
     <footer
       id="kontakt"
       ref={sectionRef}
+      className="footer-pad"
       style={{
         background: "var(--ink)",
         color: "var(--bg)",
-        padding: "120px 48px 60px",
         position: "relative",
         overflow: "hidden",
       }}
@@ -135,15 +135,7 @@ export default function Footer() {
       </div>
 
       {/* Two-column: contact info + form */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1.4fr",
-          gap: "80px",
-          marginBottom: "80px",
-          alignItems: "start",
-        }}
-      >
+      <div className="cols-footer">
         {/* Contact details */}
         <div ref={detailsRef}>
           <div style={{ marginBottom: "48px" }}>
@@ -308,7 +300,7 @@ export default function Footer() {
               Pola oznaczone * są wymagane
             </p>
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }} aria-label="Formularz kontaktowy">
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div className="form-2col">
                 <div>
                   <label htmlFor="contact-name" className="sr-only">Imię i nazwisko</label>
                   <input

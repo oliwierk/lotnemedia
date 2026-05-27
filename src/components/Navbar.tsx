@@ -28,57 +28,117 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
   const scrollTo = (href: string) => {
+    setMenuOpen(false);
     if (href === "#top") {
       window.scrollTo({ top: 0, behavior: "smooth" });
-      setMenuOpen(false);
       return;
     }
     const el = document.querySelector(href);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-      setMenuOpen(false);
-    }
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <nav
-      ref={navRef}
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        padding: "28px 48px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        transition: "background 0.4s ease, backdrop-filter 0.4s ease",
-        background: scrolled ? "rgba(242,237,232,0.88)" : "transparent",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-      }}
-    >
-      <button
-        onClick={() => scrollTo("#top")}
+    <>
+      <nav
+        ref={navRef}
+        className="nav-pad"
         style={{
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          padding: 0,
-          fontFamily: "var(--font-sans)",
-          fontWeight: 700,
-          fontSize: "15px",
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          color: "var(--ink)",
-          textDecoration: "none",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          transition: "background 0.4s ease, backdrop-filter 0.4s ease",
+          background: scrolled ? "rgba(242,237,232,0.88)" : "transparent",
+          backdropFilter: scrolled ? "blur(12px)" : "none",
         }}
       >
-        Lotne Media
-      </button>
+        <button
+          onClick={() => scrollTo("#top")}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+            fontFamily: "var(--font-sans)",
+            fontWeight: 700,
+            fontSize: "15px",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: "var(--ink)",
+          }}
+        >
+          Lotne Media
+        </button>
 
-      <div style={{ display: "flex", gap: "40px", alignItems: "center" }}>
+        <div className="nav-links">
+          {links.map((l) => (
+            <button
+              key={l.label}
+              onClick={() => scrollTo(l.href)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "var(--font-sans)",
+                fontSize: "13px",
+                fontWeight: 400,
+                letterSpacing: "0.08em",
+                color: "var(--ink-light)",
+                textTransform: "uppercase",
+                padding: 0,
+                transition: "color 0.25s ease",
+              }}
+              onMouseEnter={(e) =>
+                ((e.target as HTMLElement).style.color = "var(--ink)")
+              }
+              onMouseLeave={(e) =>
+                ((e.target as HTMLElement).style.color = "var(--ink-light)")
+              }
+            >
+              {l.label}
+            </button>
+          ))}
+        </div>
+
+        <button
+          className="nav-hamburger"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? "Zamknij menu" : "Otwórz menu"}
+          aria-expanded={menuOpen}
+        >
+          <span
+            style={{
+              transform: menuOpen
+                ? "rotate(45deg) translate(4px, 4px)"
+                : "none",
+            }}
+          />
+          <span style={{ opacity: menuOpen ? 0 : 1 }} />
+          <span
+            style={{
+              transform: menuOpen
+                ? "rotate(-45deg) translate(4px, -4px)"
+                : "none",
+            }}
+          />
+        </button>
+      </nav>
+
+      {/* Mobile menu overlay */}
+      <div
+        className={`mobile-menu${menuOpen ? " open" : ""}`}
+        aria-hidden={!menuOpen}
+      >
         {links.map((l) => (
           <button
             key={l.label}
@@ -88,25 +148,32 @@ export default function Navbar() {
               border: "none",
               cursor: "pointer",
               fontFamily: "var(--font-sans)",
-              fontSize: "13px",
-              fontWeight: 400,
-              letterSpacing: "0.08em",
-              color: "var(--ink-light)",
+              fontSize: "clamp(28px, 8vw, 44px)",
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
+              color: "var(--ink)",
               textTransform: "uppercase",
-              padding: 0,
-              transition: "color 0.25s ease",
+              padding: "10px 0",
+              textAlign: "left",
+              lineHeight: 1.1,
             }}
-            onMouseEnter={(e) =>
-              ((e.target as HTMLElement).style.color = "var(--ink)")
-            }
-            onMouseLeave={(e) =>
-              ((e.target as HTMLElement).style.color = "var(--ink-light)")
-            }
           >
             {l.label}
           </button>
         ))}
+        <span
+          style={{
+            marginTop: "48px",
+            fontFamily: "var(--font-sans)",
+            fontSize: "11px",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "var(--ink-muted)",
+          }}
+        >
+          Lotne Media · Katowice
+        </span>
       </div>
-    </nav>
+    </>
   );
 }

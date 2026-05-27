@@ -434,7 +434,8 @@ export default function Portfolio() {
     <section
       id="portfolio"
       ref={sectionRef}
-      style={{ padding: "140px 48px", background: "var(--bg)" }}
+      className="section-pad"
+      style={{ background: "var(--bg)" }}
     >
       {/* Header */}
       <div
@@ -481,6 +482,7 @@ export default function Portfolio() {
         </div>
 
         <span
+          className="section-label"
           style={{
             fontSize: "11px",
             letterSpacing: "0.18em",
@@ -558,10 +560,8 @@ export default function Portfolio() {
               </p>
             )}
             <div
+              className="grid-video"
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: "16px",
                 marginBottom: photoItems.length > 0 ? "48px" : "0",
               }}
             >
@@ -591,13 +591,7 @@ export default function Portfolio() {
                 Fotografia
               </p>
             )}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: "16px",
-              }}
-            >
+            <div className="grid-photo">
               {photoItems.map((item) => (
                 <div key={item.id} className="portfolio-tile">
                   <PhotoTile item={item} />

@@ -56,9 +56,9 @@ export default function Drony() {
     <section
       id="drony"
       ref={sectionRef}
+      className="section-pad"
       style={{
         background: "var(--ink)",
-        padding: "140px 48px",
         position: "relative",
         overflow: "hidden",
       }}
@@ -140,6 +140,7 @@ export default function Drony() {
           </div>
 
           <span
+            className="section-label"
             style={{
               fontSize: "11px",
               letterSpacing: "0.18em",
@@ -155,15 +156,7 @@ export default function Drony() {
         </div>
 
         {/* Content */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "80px",
-            alignItems: "center",
-            marginBottom: "100px",
-          }}
-        >
+        <div className="cols-2-center">
           {/* Text */}
           <div style={{ maxWidth: "480px" }}>
             <p
@@ -262,21 +255,13 @@ export default function Drony() {
         {/* Stats */}
         <div
           ref={statsRef}
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            borderTop: "1px solid rgba(242,237,232,0.1)",
-          }}
+          className="cols-stats"
+          style={{ borderTop: "1px solid rgba(242,237,232,0.1)" }}
         >
           {stats.map((s, i) => (
             <div
               key={i}
               className="drone-stat"
-              style={{
-                padding: "48px 0",
-                borderRight: i < stats.length - 1 ? "1px solid rgba(242,237,232,0.1)" : "none",
-                paddingLeft: i > 0 ? "48px" : "0",
-              }}
             >
               <p
                 style={{

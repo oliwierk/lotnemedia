@@ -69,8 +69,8 @@ export default function Process() {
     <section
       id="proces"
       ref={sectionRef}
+      className="section-pad"
       style={{
-        padding: "140px 48px",
         background: "var(--stone)",
         position: "relative",
       }}
@@ -119,6 +119,7 @@ export default function Process() {
         </div>
 
         <span
+          className="section-label"
           style={{
             fontSize: "11px",
             letterSpacing: "0.18em",
@@ -133,14 +134,7 @@ export default function Process() {
         </span>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "1px",
-          background: "rgba(13,13,13,0.1)",
-        }}
-      >
+      <div className="cols-3">
         {steps.map((s, i) => (
           <div
             key={i}

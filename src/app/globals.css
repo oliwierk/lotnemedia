@@ -75,6 +75,193 @@ body {
   /* scroll-line is GSAP-animated; PageOverlay handles GSAP globally */
 }
 
+/* ── Responsive layout ───────────────────────────────────────────────── */
+
+/* Navbar */
+.nav-pad { padding: 28px 48px; }
+
+.nav-links {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  align-items: center;
+  justify-content: center;
+}
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--ink);
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: var(--bg);
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 32px 48px;
+}
+.mobile-menu.open { display: flex; }
+
+/* Hero */
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0 48px;
+}
+
+.hero-text-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 80px;
+  padding-top: 140px;
+  z-index: 2;
+}
+
+/* Section padding */
+.section-pad { padding: 140px 48px; }
+.footer-pad  { padding: 120px 48px 60px; }
+
+/* 2-column grids */
+.cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.cols-2-center {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  margin-bottom: 100px;
+}
+.cols-footer {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 80px;
+  margin-bottom: 80px;
+  align-items: start;
+}
+
+/* 3-column grids */
+.cols-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(13,13,13,0.1);
+}
+.cols-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Team 4-column */
+.cols-team {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* Services item row */
+.svc-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: center;
+  gap: 40px;
+}
+
+/* Portfolio grids */
+.grid-video {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.grid-photo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Contact form row */
+.form-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Drone stat items — borders via CSS so media queries can override */
+.drone-stat {
+  padding: 48px 0;
+}
+.drone-stat:not(:last-child) {
+  border-right: 1px solid rgba(242,237,232,0.1);
+}
+.drone-stat + .drone-stat {
+  padding-left: 48px;
+}
+
+/* ── Tablet ≤ 768px ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .nav-pad { padding: 20px 24px; }
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+
+  .hero-layout { grid-template-columns: 1fr; padding: 0 24px; }
+  .hero-images { display: none; }
+  .hero-text-col { padding-top: 100px; padding-bottom: 48px; }
+
+  .section-pad { padding: 80px 24px; }
+  .footer-pad  { padding: 80px 24px 48px; }
+
+  .cols-2        { grid-template-columns: 1fr; gap: 48px; }
+  .cols-2-center { grid-template-columns: 1fr; gap: 48px; margin-bottom: 60px; }
+  .cols-footer   { grid-template-columns: 1fr; gap: 48px; margin-bottom: 48px; }
+  .cols-3        { grid-template-columns: 1fr; }
+  .cols-stats    { grid-template-columns: 1fr; }
+  .cols-team     { grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .drone-stat { padding: 32px 0; }
+  .drone-stat:not(:last-child) { border-right: none; border-bottom: 1px solid rgba(242,237,232,0.1); }
+  .drone-stat + .drone-stat { padding-left: 0; }
+
+  .svc-row   { grid-template-columns: 44px 1fr; gap: 20px; }
+  .svc-arrow { display: none; }
+
+  .grid-video { grid-template-columns: 1fr; }
+  .grid-photo { grid-template-columns: 1fr 1fr; }
+  .form-2col  { grid-template-columns: 1fr; }
+
+  .section-label { display: none; }
+}
+
+/* ── Mobile ≤ 480px ──────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .nav-pad { padding: 18px 20px; }
+  .hero-layout { padding: 0 20px; }
+  .hero-text-col { padding-top: 90px; padding-bottom: 40px; }
+  .section-pad { padding: 60px 20px; }
+  .footer-pad  { padding: 60px 20px 40px; }
+  .cols-team  { grid-template-columns: 1fr; }
+  .grid-photo { grid-template-columns: 1fr; }
+}
+
 /* ── Scrollbar ───────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 2px; }
 ::-webkit-scrollbar-track { background: var(--bg); }

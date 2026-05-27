@@ -74,8 +74,8 @@ export default function About() {
     <section
       id="onas"
       ref={sectionRef}
+      className="section-pad"
       style={{
-        padding: "140px 48px",
         background: "var(--stone)",
       }}
     >
@@ -124,6 +124,7 @@ export default function About() {
         </div>
 
         <span
+          className="section-label"
           style={{
             fontSize: "11px",
             letterSpacing: "0.18em",
@@ -139,14 +140,7 @@ export default function About() {
       </div>
 
       {/* Two-column layout: bio + awards */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "80px",
-          alignItems: "start",
-        }}
-      >
+      <div className="cols-2">
         {/* Bio */}
         <div ref={bioRef}>
           <p

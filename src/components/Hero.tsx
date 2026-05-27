@@ -69,11 +69,9 @@ export default function Hero() {
     <section
       id="top"
       ref={containerRef}
+      className="hero-layout"
       style={{
         minHeight: "100vh",
-        padding: "0 48px",
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
         gridTemplateRows: "1fr auto",
         gap: "0",
         position: "relative",
@@ -82,16 +80,7 @@ export default function Hero() {
       }}
     >
       {/* Left column — typography */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-end",
-          paddingBottom: "80px",
-          paddingTop: "140px",
-          zIndex: 2,
-        }}
-      >
+      <div className="hero-text-col">
         <h1
           ref={titleRef}
           style={{
@@ -150,6 +139,7 @@ export default function Hero() {
 
       {/* Right column — asymmetric images */}
       <div
+        className="hero-images"
         style={{
           position: "relative",
           paddingTop: "100px",

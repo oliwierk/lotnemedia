@@ -97,8 +97,8 @@ export default function Services() {
     <section
       id="uslugi"
       ref={sectionRef}
+      className="section-pad"
       style={{
-        padding: "140px 48px",
         background: "var(--bg)",
         position: "relative",
       }}
@@ -147,6 +147,7 @@ export default function Services() {
         </div>
 
         <span
+          className="section-label"
           style={{
             fontSize: "11px",
             letterSpacing: "0.18em",
@@ -166,6 +167,7 @@ export default function Services() {
           <div
             key={s.index}
             ref={(el) => { itemsRef.current[i] = el; }}
+            className="svc-row"
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
             onClick={() => scrollTo(s.anchor)}
@@ -173,10 +175,6 @@ export default function Services() {
               position: "relative",
               borderTop: "1px solid rgba(13,13,13,0.12)",
               padding: "36px 0 36px 20px",
-              display: "grid",
-              gridTemplateColumns: "80px 1fr auto",
-              alignItems: "center",
-              gap: "40px",
               cursor: "pointer",
               transition: "background 0.3s ease",
               background: hovered === i ? "rgba(13,13,13,0.03)" : "transparent",
@@ -240,6 +238,7 @@ export default function Services() {
             </div>
 
             <div
+              className="svc-arrow"
               style={{
                 width: "40px",
                 height: "40px",

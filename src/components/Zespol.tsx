@@ -240,8 +240,8 @@ export default function Zespol() {
     <section
       id="zespol"
       ref={sectionRef}
+      className="section-pad"
       style={{
-        padding: "140px 48px",
         background: "var(--bg)",
         borderTop: "1px solid rgba(13,13,13,0.08)",
       }}
@@ -291,6 +291,7 @@ export default function Zespol() {
         </div>
 
         <span
+          className="section-label"
           style={{
             fontSize: "11px",
             letterSpacing: "0.18em",
@@ -306,14 +307,7 @@ export default function Zespol() {
       </div>
 
       {/* Grid: 1 large featured + 3 equal */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1.4fr 1fr 1fr 1fr",
-          gap: "32px",
-          alignItems: "start",
-        }}
-      >
+      <div className="cols-team">
         {team.map((member, i) => (
           <TeamCard key={member.role} member={member} delay={i * 0.1} />
         ))}
