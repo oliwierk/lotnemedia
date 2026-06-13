@@ -16,8 +16,8 @@ export default function Home() {
       <Portfolio />
       <Process />
       <Drony />
-      <Zespol />
       <About />
+      <Zespol />
       <TrustedBy />
       <Footer />
     </main>

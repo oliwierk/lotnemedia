@@ -3,33 +3,19 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLang } from "@/context/LangContext";
+import { T } from "@/i18n/translations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const steps = [
-  {
-    num: "01",
-    title: "Koncepcja",
-    desc: "Słuchamy i pytamy. Każdy projekt zaczyna się od rozmowy — poznajemy Twój cel, historię i odbiorcę. Na tej podstawie budujemy scenariusz i plan realizacji.",
-  },
-  {
-    num: "02",
-    title: "Realizacja",
-    desc: "Kamery, drony, mikrofony. Wyjeżdżamy w teren z profesjonalnym sprzętem i ekipą. Rejestrujemy materiał w jakości nadawczej — bez kompromisów.",
-  },
-  {
-    num: "03",
-    title: "Postprodukcja",
-    desc: "Montaż, korekcja barwna, dźwięk, lektorat. Oddajemy gotowy materiał w uzgodnionym formacie — gotowy na antenę, platformę lub ekran kinowy.",
-  },
-];
-
 export default function Process() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const { lang } = useLang();
+  const t = T[lang].process;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -70,10 +56,7 @@ export default function Process() {
       id="proces"
       ref={sectionRef}
       className="section-pad"
-      style={{
-        background: "var(--stone)",
-        position: "relative",
-      }}
+      style={{ background: "var(--stone)", position: "relative" }}
     >
       <div
         style={{
@@ -97,7 +80,7 @@ export default function Process() {
                 color: "var(--ink)",
               }}
             >
-              Jak pracujemy
+              {t.heading}
             </h2>
           </div>
           <div style={{ overflow: "hidden" }}>
@@ -113,7 +96,7 @@ export default function Process() {
                 color: "var(--ink-muted)",
               }}
             >
-              razem.
+              {t.headingItalic}
             </span>
           </div>
         </div>
@@ -130,19 +113,16 @@ export default function Process() {
             marginBottom: "8px",
           }}
         >
-          Proces
+          {t.label}
         </span>
       </div>
 
       <div className="cols-3">
-        {steps.map((s, i) => (
+        {t.steps.map((s, i) => (
           <div
             key={i}
             ref={(el) => { cardsRef.current[i] = el; }}
-            style={{
-              background: "var(--stone)",
-              padding: "56px 48px",
-            }}
+            style={{ background: "var(--stone)", padding: "56px 48px" }}
           >
             <span
               style={{

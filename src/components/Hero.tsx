@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useLang } from "@/context/LangContext";
+import { T } from "@/i18n/translations";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -11,22 +13,18 @@ export default function Hero() {
   const img2Ref = useRef<HTMLDivElement>(null);
   const img3Ref = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
+  const { lang } = useLang();
+  const t = T[lang].hero;
 
   useEffect(() => {
     const tl = gsap.timeline({ delay: 1.0 });
 
-    const titleLines =
-      titleRef.current?.querySelectorAll(".hero-line") || [];
+    const titleLines = titleRef.current?.querySelectorAll(".hero-line") || [];
 
     tl.fromTo(
       titleLines,
       { yPercent: 110 },
-      {
-        yPercent: 0,
-        duration: 1.1,
-        ease: "expo.out",
-        stagger: 0.12,
-      }
+      { yPercent: 0, duration: 1.1, ease: "expo.out", stagger: 0.12 }
     )
       .fromTo(
         subtitleRef.current,
@@ -36,14 +34,8 @@ export default function Hero() {
       )
       .fromTo(
         [img1Ref.current, img2Ref.current, img3Ref.current],
-        { opacity: 0, scale: 1.08 },
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 1.4,
-          ease: "expo.out",
-          stagger: 0.15,
-        },
+        { opacity: 0, scale: 1.06 },
+        { opacity: 1, scale: 1, duration: 1.4, ease: "expo.out", stagger: 0.12 },
         "-=0.8"
       )
       .fromTo(
@@ -54,15 +46,16 @@ export default function Hero() {
       );
 
     const scrollLine = scrollHintRef.current?.querySelector(".scroll-line");
-    if (scrollLine) gsap.to(scrollLine, {
-      scaleY: 0,
-      transformOrigin: "top",
-      duration: 0.9,
-      ease: "power2.inOut",
-      repeat: -1,
-      yoyo: true,
-      repeatDelay: 0.3,
-    });
+    if (scrollLine)
+      gsap.to(scrollLine, {
+        scaleY: 0,
+        transformOrigin: "top",
+        duration: 0.9,
+        ease: "power2.inOut",
+        repeat: -1,
+        yoyo: true,
+        repeatDelay: 0.3,
+      });
   }, []);
 
   return (
@@ -72,8 +65,6 @@ export default function Hero() {
       className="hero-layout"
       style={{
         minHeight: "100vh",
-        gridTemplateRows: "1fr auto",
-        gap: "0",
         position: "relative",
         overflow: "hidden",
         background: "var(--bg)",
@@ -96,12 +87,12 @@ export default function Hero() {
         >
           <div style={{ overflow: "hidden" }}>
             <span className="hero-line" style={{ display: "block" }}>
-              Tworzymy
+              {t.line1}
             </span>
           </div>
           <div style={{ overflow: "hidden" }}>
             <span className="hero-line" style={{ display: "block" }}>
-              Obraz
+              {t.line2}
             </span>
           </div>
           <div style={{ overflow: "hidden" }}>
@@ -114,7 +105,7 @@ export default function Hero() {
                 fontStyle: "italic",
               }}
             >
-              i Dźwięk.
+              {t.line3}
             </span>
           </div>
         </h1>
@@ -129,17 +120,16 @@ export default function Hero() {
             color: "var(--ink-light)",
             maxWidth: "360px",
             letterSpacing: "0.01em",
+            whiteSpace: "pre-line",
           }}
         >
-          Reportaże, podcasty, eventy medialne i fotografia.
-          <br />
-          Produkcja wideo dla mediów i biznesu.
+          {t.subtitle}
         </p>
 
         {/* Mobile-only hero image */}
         <div className="hero-mobile-img">
           <img
-            src="https://picsum.photos/seed/film-reportaz/900/500"
+            src="/Kamera Ilona Ptak.jpg"
             alt="Produkcja wideo — Lotne Media"
             loading="eager"
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
@@ -168,70 +158,185 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Right column — asymmetric images */}
+      {/* Right column — stacked images grid */}
       <div
         className="hero-images"
         style={{
-          position: "relative",
-          paddingTop: "100px",
-          paddingBottom: "60px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+          paddingTop: "80px",
+          paddingBottom: "80px",
+          paddingLeft: "16px",
+          alignSelf: "stretch",
         }}
       >
-        {/* Box 1 — large, Reportaż TVP */}
+        {/* Main image — top, large */}
         <div
           ref={img1Ref}
-          style={{ position: "absolute", top: "120px", right: "0", width: "72%", height: "360px", overflow: "hidden" }}
+          style={{
+            position: "relative",
+            flex: "1 1 0",
+            overflow: "hidden",
+            minHeight: "280px",
+          }}
         >
           <img
-            src="https://picsum.photos/seed/film-reportaz/900/500"
+            src="/Ilona Ptak w trakcie zdjec8.jpg"
             alt="Reportaż TVP — kadr z planu"
             loading="eager"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
           />
-          {/* Vignette */}
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 55%)" }} />
-          {/* REC badge */}
-          <div style={{ position: "absolute", top: 14, left: 14, display: "flex", alignItems: "center", gap: 6 }}>
-            <div style={{ width: 7, height: 7, borderRadius: "50%", background: "rgba(220,60,60,0.85)" }} />
-            <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", fontFamily: "var(--font-sans)" }}>REC</span>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 55%)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: 14,
+              left: 14,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <div
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: "rgba(220,60,60,0.85)",
+              }}
+            />
+            <span
+              style={{
+                color: "rgba(255,255,255,0.75)",
+                fontSize: 9,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                fontFamily: "var(--font-sans)",
+              }}
+            >
+              REC
+            </span>
           </div>
-          <span style={{ position: "absolute", bottom: 16, left: 16, color: "rgba(255,255,255,0.75)", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", fontFamily: "var(--font-sans)" }}>
-            Reportaż TVP
+          <span
+            style={{
+              position: "absolute",
+              bottom: 16,
+              left: 16,
+              color: "rgba(255,255,255,0.75)",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              fontFamily: "var(--font-sans)",
+            }}
+          >
+            {t.img1}
           </span>
         </div>
 
-        {/* Box 2 — medium, Event */}
+        {/* Bottom row — two images side by side */}
         <div
-          ref={img2Ref}
-          style={{ position: "absolute", bottom: "140px", left: "0", width: "52%", height: "240px", overflow: "hidden" }}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.15fr 1fr",
+            gap: "8px",
+            flex: "0 0 38%",
+          }}
         >
-          <img
-            src="https://picsum.photos/seed/conference-media/700/350"
-            alt="Event medialny"
-            loading="eager"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 55%)" }} />
-          <span style={{ position: "absolute", bottom: 16, left: 16, color: "rgba(255,255,255,0.75)", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", fontFamily: "var(--font-sans)" }}>
-            Event
-          </span>
-        </div>
+          {/* Event */}
+          <div
+            ref={img2Ref}
+            style={{ position: "relative", overflow: "hidden" }}
+          >
+            <img
+              src="/mikrofony  konferencji.jpeg"
+              alt="Event medialny"
+              loading="eager"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 55%)",
+              }}
+            />
+            <span
+              style={{
+                position: "absolute",
+                bottom: 14,
+                left: 14,
+                color: "rgba(255,255,255,0.75)",
+                fontSize: 10,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                fontFamily: "var(--font-sans)",
+              }}
+            >
+              {t.img2}
+            </span>
+          </div>
 
-        {/* Box 3 — small, Foto */}
-        <div
-          ref={img3Ref}
-          style={{ position: "absolute", bottom: "60px", right: "40px", width: "38%", height: "180px", overflow: "hidden" }}
-        >
-          <img
-            src="https://picsum.photos/seed/portrait-photo/500/300"
-            alt="Fotografia"
-            loading="eager"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 55%)" }} />
-          <span style={{ position: "absolute", bottom: 14, left: 14, color: "rgba(255,255,255,0.75)", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", fontFamily: "var(--font-sans)" }}>
-            Fotografia
-          </span>
+          {/* Foto */}
+          <div
+            ref={img3Ref}
+            style={{ position: "relative", overflow: "hidden" }}
+          >
+            <img
+              src="/aparat kolor.JPG"
+              alt="Fotografia"
+              loading="eager"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 55%)",
+              }}
+            />
+            <span
+              style={{
+                position: "absolute",
+                bottom: 14,
+                left: 14,
+                color: "rgba(255,255,255,0.75)",
+                fontSize: 10,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                fontFamily: "var(--font-sans)",
+              }}
+            >
+              {t.img3}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -249,11 +354,7 @@ export default function Hero() {
       >
         <div
           className="scroll-line"
-          style={{
-            width: "1px",
-            height: "48px",
-            background: "var(--ink)",
-          }}
+          style={{ width: "1px", height: "48px", background: "var(--ink)" }}
         />
         <span
           style={{

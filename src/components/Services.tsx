@@ -3,55 +3,22 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLang } from "@/context/LangContext";
+import { T } from "@/i18n/translations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const services = [
-  {
-    index: "01",
-    title: "Reportaże TVP",
-    desc: "Profesjonalne reportaże dla telewizji publicznej i mediów ogólnopolskich.",
-    anchor: "#portfolio",
-  },
-  {
-    index: "02",
-    title: "Podcasty",
-    desc: "Produkcja audio i wideo podcastów. Studyjna jakość w każdym odcinku.",
-    anchor: "#portfolio",
-  },
-  {
-    index: "03",
-    title: "Eventy Medialne",
-    desc: "Kompleksowa obsługa wideo i foto wydarzeń, konferencji i premier.",
-    anchor: "#portfolio",
-  },
-  {
-    index: "04",
-    title: "Fotografia",
-    desc: "Fotografia reportażowa, produktowa i portretowa na najwyższym poziomie.",
-    anchor: "#portfolio",
-  },
-  {
-    index: "05",
-    title: "Drony & Lotnictwo",
-    desc: "Ujęcia z powietrza w jakości 4K. Licencjonowani piloci dronów w całej Europie.",
-    anchor: "#drony",
-  },
-  {
-    index: "06",
-    title: "Lektor & Voice-over",
-    desc: "Profesjonalne nagrania lektorskie słyszalne w radio, telewizji i filmach.",
-    anchor: "#kontakt",
-  },
-];
+const anchors = ["#portfolio", "#portfolio", "#portfolio", "#portfolio", "#drony"];
 
 export default function Services() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [hovered, setHovered] = useState<number | null>(null);
+  const { lang } = useLang();
+  const t = T[lang].services;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -98,10 +65,7 @@ export default function Services() {
       id="uslugi"
       ref={sectionRef}
       className="section-pad"
-      style={{
-        background: "var(--bg)",
-        position: "relative",
-      }}
+      style={{ background: "var(--bg)", position: "relative" }}
     >
       <div
         style={{
@@ -125,7 +89,7 @@ export default function Services() {
                 color: "var(--ink)",
               }}
             >
-              Co robimy
+              {t.heading}
             </h2>
           </div>
           <div style={{ overflow: "hidden" }}>
@@ -141,7 +105,7 @@ export default function Services() {
                 color: "var(--ink-muted)",
               }}
             >
-              najlepiej.
+              {t.headingItalic}
             </span>
           </div>
         </div>
@@ -158,19 +122,19 @@ export default function Services() {
             marginBottom: "8px",
           }}
         >
-          Usługi
+          {t.label}
         </span>
       </div>
 
       <div style={{ position: "relative" }}>
-        {services.map((s, i) => (
+        {t.items.map((s, i) => (
           <div
-            key={s.index}
+            key={i}
             ref={(el) => { itemsRef.current[i] = el; }}
             className="svc-row"
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
-            onClick={() => scrollTo(s.anchor)}
+            onClick={() => scrollTo(anchors[i])}
             style={{
               position: "relative",
               borderTop: "1px solid rgba(13,13,13,0.12)",
@@ -180,7 +144,6 @@ export default function Services() {
               background: hovered === i ? "rgba(13,13,13,0.03)" : "transparent",
             }}
           >
-            {/* Left indicator bar — uses transform so layout never shifts */}
             <div
               style={{
                 position: "absolute",
@@ -204,7 +167,7 @@ export default function Services() {
                 textTransform: "uppercase",
               }}
             >
-              {s.index}
+              0{i + 1}
             </span>
 
             <div>

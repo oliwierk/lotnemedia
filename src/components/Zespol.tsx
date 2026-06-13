@@ -3,47 +3,27 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLang } from "@/context/LangContext";
+import { T } from "@/i18n/translations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const team = [
-  {
-    name: "Ilona Ptak",
-    role: "Założyciel · Dziennikarz",
-    bio: "Specjalistka PR i dziennikarka współpracująca z ogólnopolską telewizją. Wielokrotnie nagradzana na polskich konkursach dziennikarskich i filmowych.",
-    img: null,
-    featured: true,
-  },
-  {
-    name: null,
-    role: "Operator kamery",
-    bio: "Operator z wieloletnim doświadczeniem w produkcjach telewizyjnych. Specjalizuje się w zdjęciach reportażowych i ujęciach z drona.",
-    img: null,
-    featured: false,
-  },
-  {
-    name: null,
-    role: "Montaż · Postprodukcja",
-    bio: "Montażystka reportaży, podcastów i spotów reklamowych. Pasjonuje się opowiadaniem historii przez obraz.",
-    img: null,
-    featured: false,
-  },
-  {
-    name: null,
-    role: "Fotograf",
-    bio: "Fotograf reportażowy i portretowy, laureat ogólnopolskich konkursów fotograficznych. Pracuje z klientami biznesowymi i mediami.",
-    img: null,
-    featured: false,
-  },
+const MEMBER_PHOTOS = [
+  "/Bartosz Dominik operator.avif",
+  "/Bart Jarzab montazysta.jpg",
+  "/Basia Jendrzejczyk Fotograf.jpg",
+  "/Jola Gwardys.jpeg",
 ];
 
 function TeamCard({
   member,
+  photo,
   delay,
 }: {
-  member: (typeof team)[number];
+  member: { name: string; role: string; bio: string };
+  photo: string;
   delay: number;
 }) {
   const [hovered, setHovered] = useState(false);
@@ -74,63 +54,33 @@ function TeamCard({
           position: "relative",
           aspectRatio: "3/4",
           overflow: "hidden",
-          marginBottom: "20px",
+          marginBottom: "16px",
           cursor: "default",
-          background: member.featured ? "#2a2826" : "#e6e0da",
+          background: "#e6e0da",
         }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        {/* Placeholder — subtle grid + aperture mark */}
-        <div
-          className="tile-placeholder"
-          style={{ position: "absolute", inset: 0 }}
+        <img
+          src={photo}
+          alt={member.name}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "top center",
+            display: "block",
+          }}
         />
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: member.featured
-              ? "radial-gradient(ellipse at 45% 35%, rgba(255,255,255,0.07) 0%, transparent 60%)"
-              : "radial-gradient(ellipse at 45% 35%, rgba(13,13,13,0.04) 0%, transparent 60%)",
+            background: "linear-gradient(to top, rgba(13,13,13,0.5) 0%, transparent 45%)",
           }}
         />
-        {/* Aperture icon */}
-        <svg
-          aria-hidden="true"
-          width="36"
-          height="36"
-          viewBox="0 0 36 36"
-          fill="none"
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            opacity: member.featured ? 0.12 : 0.15,
-          }}
-        >
-          <circle cx="18" cy="18" r="16" stroke="currentColor" strokeWidth="1" />
-          <circle cx="18" cy="18" r="7" stroke="currentColor" strokeWidth="1" />
-          <line x1="18" y1="2" x2="18" y2="8" stroke="currentColor" strokeWidth="1" />
-          <line x1="18" y1="28" x2="18" y2="34" stroke="currentColor" strokeWidth="1" />
-          <line x1="2" y1="18" x2="8" y2="18" stroke="currentColor" strokeWidth="1" />
-          <line x1="28" y1="18" x2="34" y2="18" stroke="currentColor" strokeWidth="1" />
-        </svg>
-        <span
-          style={{
-            position: "absolute",
-            bottom: "14px",
-            left: "14px",
-            fontFamily: "var(--font-sans)",
-            fontSize: "9px",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: member.featured ? "rgba(242,237,232,0.3)" : "rgba(13,13,13,0.25)",
-          }}
-        >
-          Zdjęcie
-        </span>
 
         {/* Hover bio overlay */}
         <div
@@ -148,7 +98,7 @@ function TeamCard({
           <p
             style={{
               fontFamily: "var(--font-sans)",
-              fontSize: "14px",
+              fontSize: "13px",
               lineHeight: 1.65,
               color: "rgba(242,237,232,0.9)",
               transform: hovered ? "translateY(0)" : "translateY(12px)",
@@ -158,47 +108,23 @@ function TeamCard({
             {member.bio}
           </p>
         </div>
-
-        {/* Featured badge */}
-        {member.featured && (
-          <div
-            style={{
-              position: "absolute",
-              top: "16px",
-              left: "16px",
-              background: "rgba(13,13,13,0.75)",
-              backdropFilter: "blur(8px)",
-              padding: "6px 12px",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "9px",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "rgba(242,237,232,0.75)",
-              }}
-            >
-              Założyciel
-            </span>
-          </div>
-        )}
       </div>
 
-      {/* Name + role */}
+      {/* Name */}
       <p
         style={{
           fontFamily: "var(--font-sans)",
           fontWeight: 600,
-          fontSize: "16px",
+          fontSize: "15px",
           letterSpacing: "-0.01em",
-          color: member.name ? "var(--ink)" : "var(--ink-muted)",
+          color: "var(--ink)",
           marginBottom: "4px",
         }}
       >
-        {member.name ?? "Imię Nazwisko"}
+        {member.name}
       </p>
+
+      {/* Role */}
       <p
         style={{
           fontFamily: "var(--font-sans)",
@@ -217,6 +143,8 @@ function TeamCard({
 export default function Zespol() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
+  const { lang } = useLang();
+  const t = T[lang].team;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -269,7 +197,7 @@ export default function Zespol() {
                 color: "var(--ink)",
               }}
             >
-              Zespół
+              {t.heading}
             </h2>
           </div>
           <div style={{ overflow: "hidden" }}>
@@ -285,7 +213,7 @@ export default function Zespol() {
                 color: "var(--ink-muted)",
               }}
             >
-              za obiektywem.
+              {t.headingItalic}
             </span>
           </div>
         </div>
@@ -302,17 +230,21 @@ export default function Zespol() {
             marginBottom: "8px",
           }}
         >
-          Ludzie
+          {t.label}
         </span>
       </div>
 
-      {/* Grid: 1 large featured + 3 equal */}
+      {/* Grid: 4 columns */}
       <div className="cols-team">
-        {team.map((member, i) => (
-          <TeamCard key={member.role} member={member} delay={i * 0.1} />
+        {t.members.map((member, i) => (
+          <TeamCard
+            key={member.name}
+            member={member}
+            photo={MEMBER_PHOTOS[i]}
+            delay={i * 0.1}
+          />
         ))}
       </div>
-
     </section>
   );
 }

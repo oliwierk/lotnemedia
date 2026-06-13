@@ -3,20 +3,33 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLang } from "@/context/LangContext";
+import { T } from "@/i18n/translations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const clients = [
-  "TVP", "Polskie Radio", "Canal+", "Onet", "WP", "Gazeta Wyborcza",
-  "Ministerstwo Kultury", "POLIN", "NCK", "Forum Ekonomiczne",
-  "TVP", "Polskie Radio", "Canal+", "Onet", "WP", "Gazeta Wyborcza",
-  "Ministerstwo Kultury", "POLIN", "NCK", "Forum Ekonomiczne",
+const logos = [
+  { src: "/Kopia TVP_logo.svg.png", alt: "TVP" },
+  { src: "/Tvp-world.svg.png", alt: "TVP World" },
+  { src: "/TVP_Kultura_logo_2015.png", alt: "TVP Kultura" },
+  { src: "/TVP3-Katowice.svg.png", alt: "TVP3 Katowice" },
+  { src: "/tso_logo.png", alt: "TSO" },
+  { src: "/Muzeum JP2.png", alt: "Muzeum Jana Pawła II" },
+  { src: "/Logo MER.jpg", alt: "MER" },
+  { src: "/logo ue1.png", alt: "Unia Europejska" },
+  { src: "/logo ue2.jpg", alt: "Fundusze Europejskie" },
+  { src: "/logo CECC.png", alt: "CECC" },
+  { src: "/Propter tv.jpg", alt: "Propter TV" },
 ];
+
+const track = [...logos, ...logos];
 
 export default function TrustedBy() {
   const sectionRef = useRef<HTMLElement>(null);
+  const { lang } = useLang();
+  const t = T[lang].trustedBy;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -55,11 +68,10 @@ export default function TrustedBy() {
           marginBottom: "48px",
         }}
       >
-        Zaufali nam
+        {t.label}
       </p>
 
       <div style={{ overflow: "hidden", position: "relative" }}>
-        {/* Fade edges */}
         <div
           style={{
             position: "absolute",
@@ -86,46 +98,33 @@ export default function TrustedBy() {
         />
 
         <div className="marquee-track">
-          {clients.map((client, i) => (
+          {track.map((logo, i) => (
             <div
               key={i}
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "64px",
-                padding: "0 32px",
-                whiteSpace: "nowrap",
+                padding: "0 40px",
+                flexShrink: 0,
               }}
             >
-              <span
+              <img
+                src={logo.src}
+                alt={logo.alt}
                 style={{
-                  fontFamily: "var(--font-sans)",
-                  fontWeight: 700,
-                  fontSize: "clamp(20px, 2.5vw, 30px)",
-                  letterSpacing: "-0.02em",
-                  color: "rgba(13,13,13,0.15)",
-                  textTransform: "uppercase",
+                  height: "40px",
+                  maxWidth: "120px",
+                  objectFit: "contain",
+                  display: "block",
+                  filter: "grayscale(1) opacity(0.35)",
+                  transition: "filter 0.3s ease",
                   userSelect: "none",
-                  transition: "color 0.3s ease",
-                  cursor: "default",
                 }}
-                onMouseEnter={(e) =>
-                  ((e.target as HTMLSpanElement).style.color = "rgba(13,13,13,0.8)")
-                }
-                onMouseLeave={(e) =>
-                  ((e.target as HTMLSpanElement).style.color = "rgba(13,13,13,0.15)")
-                }
-              >
-                {client}
-              </span>
-              <span
-                style={{
-                  width: "4px",
-                  height: "4px",
-                  borderRadius: "50%",
-                  background: "rgba(13,13,13,0.15)",
-                  display: "inline-block",
-                  flexShrink: 0,
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.filter = "grayscale(0) opacity(1)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.filter = "grayscale(1) opacity(0.35)";
                 }}
               />
             </div>

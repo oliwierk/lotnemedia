@@ -2,20 +2,28 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-
-const links = [
-  { label: "Realizacje", href: "#portfolio" },
-  { label: "Usługi", href: "#uslugi" },
-  { label: "Drony", href: "#drony" },
-  { label: "O nas", href: "#onas" },
-  { label: "Kontakt", href: "#kontakt" },
-];
+import { useLang } from "@/context/LangContext";
+import { T } from "@/i18n/translations";
 
 export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const langBtnRef = useRef<HTMLButtonElement>(null);
+  const langBtnMobileRef = useRef<HTMLButtonElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { lang, toggle } = useLang();
+  const t = T[lang].nav;
+
+  const links = [
+    { label: t.realizacje, href: "#portfolio" },
+    { label: t.uslugi, href: "#uslugi" },
+    { label: t.drony, href: "#drony" },
+    { label: t.onas, href: "#onas" },
+    { label: t.kontakt, href: "#kontakt" },
+  ];
+
+  const nextLang = lang === "pl" ? "EN" : "PL";
 
   useEffect(() => {
     gsap.fromTo(
@@ -58,6 +66,35 @@ export default function Navbar() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
+  const handleLangToggle = () => {
+    const btns = [langBtnRef.current, langBtnMobileRef.current].filter(Boolean) as HTMLElement[];
+
+    gsap.set(btns, { transformPerspective: 500 });
+    gsap
+      .timeline()
+      .to(btns, { rotationY: 90, duration: 0.14, ease: "power2.in" })
+      .call(() => toggle())
+      .fromTo(
+        btns,
+        { rotationY: -90 },
+        { rotationY: 0, duration: 0.22, ease: "back.out(1.6)" }
+      );
+  };
+
+  const linkStyle: React.CSSProperties = {
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    fontFamily: "var(--font-sans)",
+    fontSize: "13px",
+    fontWeight: 400,
+    letterSpacing: "0.08em",
+    color: "var(--ink-light)",
+    textTransform: "uppercase",
+    padding: 0,
+    transition: "color 0.25s ease",
+  };
+
   return (
     <>
       <nav
@@ -77,6 +114,7 @@ export default function Navbar() {
           backdropFilter: scrolled ? "blur(12px)" : "none",
         }}
       >
+        {/* Logo — left */}
         <button
           onClick={() => scrollTo("#top")}
           style={{
@@ -90,63 +128,121 @@ export default function Navbar() {
             letterSpacing: "0.12em",
             textTransform: "uppercase",
             color: "var(--ink)",
+            flexShrink: 0,
           }}
         >
           Lotne Media
         </button>
 
-        <div className="nav-links">
-          {links.map((l) => (
+        {/* Right group */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {/* Desktop links + lang toggle */}
+          <div className="nav-links" style={{ gap: "36px" }}>
+            {links.map((l) => (
+              <button
+                key={l.href}
+                onClick={() => scrollTo(l.href)}
+                style={linkStyle}
+                onMouseEnter={(e) =>
+                  ((e.target as HTMLElement).style.color = "var(--ink)")
+                }
+                onMouseLeave={(e) =>
+                  ((e.target as HTMLElement).style.color = "var(--ink-light)")
+                }
+              >
+                {l.label}
+              </button>
+            ))}
+
+            {/* Language toggle — desktop */}
             <button
-              key={l.label}
-              onClick={() => scrollTo(l.href)}
+              ref={langBtnRef}
+              onClick={handleLangToggle}
+              aria-label={lang === "pl" ? "Switch to English" : "Przełącz na polski"}
               style={{
                 background: "none",
-                border: "none",
+                border: "1px solid rgba(13,13,13,0.22)",
                 cursor: "pointer",
                 fontFamily: "var(--font-sans)",
-                fontSize: "13px",
-                fontWeight: 400,
-                letterSpacing: "0.08em",
+                fontSize: "10px",
+                fontWeight: 600,
+                letterSpacing: "0.16em",
                 color: "var(--ink-light)",
                 textTransform: "uppercase",
-                padding: 0,
-                transition: "color 0.25s ease",
+                padding: "5px 10px",
+                transition: "border-color 0.25s ease, color 0.25s ease",
+                minWidth: "38px",
               }}
-              onMouseEnter={(e) =>
-                ((e.target as HTMLElement).style.color = "var(--ink)")
-              }
-              onMouseLeave={(e) =>
-                ((e.target as HTMLElement).style.color = "var(--ink-light)")
-              }
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "var(--ink)";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--ink)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "var(--ink-light)";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(13,13,13,0.22)";
+              }}
             >
-              {l.label}
+              {nextLang}
             </button>
-          ))}
-        </div>
+          </div>
 
-        <button
-          className="nav-hamburger"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "Zamknij menu" : "Otwórz menu"}
-          aria-expanded={menuOpen}
-        >
-          <span
+          {/* Mobile: lang + hamburger */}
+          <div
             style={{
-              transform: menuOpen
-                ? "rotate(45deg) translate(4px, 4px)"
-                : "none",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
             }}
-          />
-          <span style={{ opacity: menuOpen ? 0 : 1 }} />
-          <span
-            style={{
-              transform: menuOpen
-                ? "rotate(-45deg) translate(4px, -4px)"
-                : "none",
-            }}
-          />
-        </button>
+          >
+            {/* Language toggle — mobile */}
+            <button
+              ref={langBtnMobileRef}
+              className="nav-hamburger"
+              onClick={handleLangToggle}
+              aria-label={lang === "pl" ? "EN" : "PL"}
+              style={{
+                background: "none",
+                border: "1px solid rgba(13,13,13,0.22)",
+                cursor: "pointer",
+                fontFamily: "var(--font-sans)",
+                fontSize: "10px",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                color: "var(--ink-light)",
+                padding: "5px 9px",
+                flexDirection: "row",
+                gap: 0,
+                minWidth: "36px",
+              }}
+            >
+              {nextLang}
+            </button>
+
+            {/* Hamburger */}
+            <button
+              className="nav-hamburger"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={menuOpen ? "Zamknij menu" : "Otwórz menu"}
+              aria-expanded={menuOpen}
+            >
+              <span
+                style={{
+                  transform: menuOpen
+                    ? "rotate(45deg) translate(4px, 4px)"
+                    : "none",
+                }}
+              />
+              <span style={{ opacity: menuOpen ? 0 : 1 }} />
+              <span
+                style={{
+                  transform: menuOpen
+                    ? "rotate(-45deg) translate(4px, -4px)"
+                    : "none",
+                }}
+              />
+            </button>
+          </div>
+        </div>
       </nav>
 
       {/* Mobile menu overlay */}
@@ -157,7 +253,7 @@ export default function Navbar() {
       >
         {links.map((l) => (
           <button
-            key={l.label}
+            key={l.href}
             className="menu-link"
             onClick={() => scrollTo(l.href)}
             style={{

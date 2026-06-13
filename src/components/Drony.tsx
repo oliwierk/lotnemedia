@@ -3,21 +3,19 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLang } from "@/context/LangContext";
+import { T } from "@/i18n/translations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const stats = [
-  { value: "4K", label: "Rozdzielczość nagrań" },
-  { value: "EU", label: "Licencja pilota drona" },
-  { value: "100+", label: "Lotnych realizacji" },
-];
-
 export default function Drony() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
+  const { lang } = useLang();
+  const t = T[lang].drony;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -118,7 +116,7 @@ export default function Drony() {
                   color: "var(--bg)",
                 }}
               >
-                Drony
+                {t.heading}
               </h2>
             </div>
             <div style={{ overflow: "hidden" }}>
@@ -134,7 +132,7 @@ export default function Drony() {
                   color: "rgba(242,237,232,0.55)",
                 }}
               >
-                & lotnictwo.
+                {t.headingItalic}
               </span>
             </div>
           </div>
@@ -151,7 +149,7 @@ export default function Drony() {
               marginBottom: "8px",
             }}
           >
-            Aerial
+            {t.label}
           </span>
         </div>
 
@@ -169,9 +167,7 @@ export default function Drony() {
                 marginBottom: "24px",
               }}
             >
-              Tworzymy ujęcia z powietrza, które zmieniają perspektywę.
-              Profesjonalne drony z kamerami 4K pozwalają uchwycić to,
-              czego kamera na ziemi nigdy nie zobaczy.
+              {t.text1}
             </p>
             <p
               style={{
@@ -181,47 +177,37 @@ export default function Drony() {
                 color: "rgba(242,237,232,0.55)",
               }}
             >
-              Nasi piloci posiadają licencje wymagane przepisami UE.
-              Operujemy na terenie całej Polski i Europy: od pejzaży
-              krajobrazowych po dynamiczne ujęcia eventów i nieruchomości.
+              {t.text2}
             </p>
           </div>
 
-          {/* Mock aerial frame */}
+          {/* Aerial photo */}
           <div
             style={{
               aspectRatio: "16/9",
-              background: "rgba(242,237,232,0.04)",
-              border: "1px solid rgba(242,237,232,0.1)",
               position: "relative",
               overflow: "hidden",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
             }}
           >
-            {/* Crosshair graphic */}
+            <img
+              src="/Ilona Ptak spadochron3.jpg"
+              alt="Ujęcia z powietrza — Lotne Media"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
             <div
               style={{
                 position: "absolute",
                 inset: 0,
-                backgroundImage:
-                  "radial-gradient(circle at 50% 50%, rgba(242,237,232,0.06) 0%, transparent 60%)",
+                background: "rgba(13,13,13,0.35)",
               }}
             />
-            <svg
-              width="80"
-              height="80"
-              viewBox="0 0 80 80"
-              fill="none"
-              style={{ opacity: 0.2 }}
-            >
-              <circle cx="40" cy="40" r="30" stroke="rgba(242,237,232,0.6)" strokeWidth="0.8" />
-              <circle cx="40" cy="40" r="15" stroke="rgba(242,237,232,0.6)" strokeWidth="0.8" />
-              <line x1="40" y1="0" x2="40" y2="80" stroke="rgba(242,237,232,0.6)" strokeWidth="0.6" />
-              <line x1="0" y1="40" x2="80" y2="40" stroke="rgba(242,237,232,0.6)" strokeWidth="0.6" />
-              <circle cx="40" cy="40" r="2" fill="rgba(242,237,232,0.6)" />
-            </svg>
             <span
               style={{
                 position: "absolute",
@@ -231,7 +217,7 @@ export default function Drony() {
                 fontSize: "9px",
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "rgba(242,237,232,0.25)",
+                color: "rgba(242,237,232,0.55)",
               }}
             >
               4K / 60fps
@@ -244,7 +230,7 @@ export default function Drony() {
                 fontFamily: "var(--font-sans)",
                 fontSize: "9px",
                 letterSpacing: "0.14em",
-                color: "rgba(242,237,232,0.2)",
+                color: "rgba(242,237,232,0.45)",
               }}
             >
               REC ●
@@ -258,11 +244,8 @@ export default function Drony() {
           className="cols-stats"
           style={{ borderTop: "1px solid rgba(242,237,232,0.1)" }}
         >
-          {stats.map((s, i) => (
-            <div
-              key={i}
-              className="drone-stat"
-            >
+          {t.stats.map((s, i) => (
+            <div key={i} className="drone-stat">
               <p
                 style={{
                   fontFamily: "var(--font-sans)",

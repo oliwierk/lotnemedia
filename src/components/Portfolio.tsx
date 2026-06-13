@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLang } from "@/context/LangContext";
+import { T } from "@/i18n/translations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -16,17 +18,19 @@ type PortfolioItem = {
   youtubeId?: string;
   aspect: string;
   bg: string;
+  thumbnail?: string;
 };
 
-const FILTERS = ["Wszystko", "Reportaże", "Podcasty", "Eventy", "Fotografia"] as const;
+const FILTERS = ["Wszystko", "Filmy i reportaże", "Podcasty", "Media Event", "Foto", "Dron"] as const;
 type Filter = (typeof FILTERS)[number];
 
 const CATEGORY_MAP: Record<Filter, string | null> = {
   Wszystko: null,
-  Reportaże: "Reportaż TVP",
+  "Filmy i reportaże": "Film",
   Podcasty: "Podcast",
-  Eventy: "Event",
-  Fotografia: "Fotografia",
+  "Media Event": "Event",
+  Foto: "Foto",
+  Dron: "Dron",
 };
 
 const items: PortfolioItem[] = [
@@ -34,19 +38,21 @@ const items: PortfolioItem[] = [
     id: "r1",
     type: "video",
     title: "Reportaż — Festiwal Kultury",
-    category: "Reportaż TVP",
+    category: "Film",
     youtubeId: "dQw4w9WgXcQ",
     aspect: "16/9",
     bg: "#1a1a1a",
+    thumbnail: "/ERP1.png",
   },
   {
     id: "r2",
     type: "video",
     title: "Reportaż — Rok Chopinowski",
-    category: "Reportaż TVP",
+    category: "Film",
     youtubeId: "dQw4w9WgXcQ",
     aspect: "16/9",
     bg: "#181818",
+    thumbnail: "/ERP2.png",
   },
   {
     id: "pod1",
@@ -56,6 +62,7 @@ const items: PortfolioItem[] = [
     youtubeId: "dQw4w9WgXcQ",
     aspect: "16/9",
     bg: "#1e1c1b",
+    thumbnail: "/ERP3.png",
   },
   {
     id: "pod2",
@@ -65,6 +72,7 @@ const items: PortfolioItem[] = [
     youtubeId: "dQw4w9WgXcQ",
     aspect: "16/9",
     bg: "#1c1a19",
+    thumbnail: "/ERP4.png",
   },
   {
     id: "e1",
@@ -74,6 +82,7 @@ const items: PortfolioItem[] = [
     youtubeId: "dQw4w9WgXcQ",
     aspect: "16/9",
     bg: "#1a1a1a",
+    thumbnail: "/mikrofony  konferencji.jpeg",
   },
   {
     id: "e2",
@@ -87,26 +96,75 @@ const items: PortfolioItem[] = [
   {
     id: "f1",
     type: "photo",
-    title: "Portret — Artysta",
-    category: "Fotografia",
+    title: "Portret — Ilona Ptak z aparatem",
+    category: "Foto",
     aspect: "3/4",
     bg: "#2c2926",
+    thumbnail: "/Ilona Ptak z aparatem (2).JPG",
   },
   {
     id: "f2",
     type: "photo",
-    title: "Reportaż — Miasto Nocą",
-    category: "Fotografia",
+    title: "Reportaż — Spiżarnia",
+    category: "Foto",
     aspect: "3/2",
     bg: "#222022",
+    thumbnail: "/spiżarnia.jpeg",
   },
   {
     id: "f3",
     type: "photo",
-    title: "Event — Za Kulisami",
-    category: "Fotografia",
+    title: "Patyk Festiwal — na scenie",
+    category: "Foto",
     aspect: "4/5",
     bg: "#252220",
+    thumbnail: "/Patyk festiwal na scenie.jpg",
+  },
+  {
+    id: "f4",
+    type: "photo",
+    title: "Nagroda Patyk — Opole",
+    category: "Foto",
+    aspect: "3/4",
+    bg: "#1e1c1a",
+    thumbnail: "/Nagroda Patyk Opole Ilona Ptak.jpg",
+  },
+  {
+    id: "f5",
+    type: "photo",
+    title: "Wyróżnienie — Silesia Press",
+    category: "Foto",
+    aspect: "3/2",
+    bg: "#1a1a1a",
+    thumbnail: "/Ilona Ptak nagroda Silesia Press.jpg",
+  },
+  {
+    id: "f6",
+    type: "photo",
+    title: "W trakcie zdjęć",
+    category: "Foto",
+    aspect: "4/5",
+    bg: "#202020",
+    thumbnail: "/Ilona Ptak w trakcie zdjec6.jpg",
+  },
+  {
+    id: "d1",
+    type: "video",
+    title: "Ujęcia z powietrza — Katowice",
+    category: "Dron",
+    youtubeId: "dQw4w9WgXcQ",
+    aspect: "16/9",
+    bg: "#171820",
+    thumbnail: "/Ilona Ptak spadochron3.jpg",
+  },
+  {
+    id: "d2",
+    type: "video",
+    title: "Panorama — Górny Śląsk",
+    category: "Dron",
+    youtubeId: "dQw4w9WgXcQ",
+    aspect: "16/9",
+    bg: "#14151e",
   },
 ];
 
@@ -173,7 +231,7 @@ function VideoTile({ item }: { item: PortfolioItem }) {
         <>
           {/* Thumbnail */}
           <img
-            src={`https://picsum.photos/seed/${item.id}/640/360`}
+            src={item.thumbnail || `https://picsum.photos/seed/${item.id}/640/360`}
             alt={item.title}
             loading="lazy"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
@@ -306,7 +364,7 @@ function PhotoTile({ item }: { item: PortfolioItem }) {
     >
       {/* Thumbnail */}
       <img
-        src={`https://picsum.photos/seed/${item.id}/500/650`}
+        src={item.thumbnail || `https://picsum.photos/seed/${item.id}/500/650`}
         alt={item.title}
         loading="lazy"
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
@@ -385,6 +443,8 @@ export default function Portfolio() {
   const gridRef = useRef<HTMLDivElement>(null);
   const [activeFilter, setActiveFilter] = useState<Filter>("Wszystko");
   const [visible, setVisible] = useState(false);
+  const { lang } = useLang();
+  const t = T[lang].portfolio;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -460,7 +520,7 @@ export default function Portfolio() {
                 color: "var(--ink)",
               }}
             >
-              Realizacje
+              {t.heading}
             </h2>
           </div>
           <div style={{ overflow: "hidden" }}>
@@ -476,7 +536,7 @@ export default function Portfolio() {
                 color: "var(--ink-muted)",
               }}
             >
-              i projekty.
+              {t.headingItalic}
             </span>
           </div>
         </div>
@@ -493,7 +553,7 @@ export default function Portfolio() {
             marginBottom: "8px",
           }}
         >
-          Portfolio
+          {t.label}
         </span>
       </div>
 
@@ -506,7 +566,7 @@ export default function Portfolio() {
           flexWrap: "wrap",
         }}
       >
-        {FILTERS.map((f) => (
+        {FILTERS.map((f, fi) => (
           <button
             key={f}
             onClick={() => setActiveFilter(f)}
@@ -535,7 +595,7 @@ export default function Portfolio() {
                 (e.currentTarget as HTMLButtonElement).style.color = "var(--ink-muted)";
             }}
           >
-            {f}
+            {t.filters[fi]}
           </button>
         ))}
       </div>
@@ -556,7 +616,7 @@ export default function Portfolio() {
                   marginBottom: "20px",
                 }}
               >
-                Wideo
+                {t.sectionVideo}
               </p>
             )}
             <div
@@ -588,7 +648,7 @@ export default function Portfolio() {
                   marginBottom: "20px",
                 }}
               >
-                Fotografia
+                {t.sectionPhoto}
               </p>
             )}
             <div className="grid-photo">
@@ -611,7 +671,7 @@ export default function Portfolio() {
               padding: "80px 0",
             }}
           >
-            Brak realizacji w tej kategorii.
+            {t.empty}
           </p>
         )}
       </div>

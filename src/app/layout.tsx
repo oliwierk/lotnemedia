@@ -3,6 +3,7 @@ import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import PageOverlay from "@/components/PageOverlay";
+import Providers from "@/components/Providers";
 
 const dmSans = DM_Sans({
   variable: "--font-sans",
@@ -40,9 +41,11 @@ export default function RootLayout({
       className={`${dmSans.variable} ${cormorant.variable}`}
     >
       <body style={{ fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
-        <PageOverlay />
-        <Navbar />
-        {children}
+        <Providers>
+          <PageOverlay />
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
