@@ -20,12 +20,46 @@ export default function About() {
   const awardsRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(false);
   const [content, setContent] = useState<ContentData>({});
+  const [translated, setTranslated] = useState<ContentData>({});
   const { lang } = useLang();
   const t = T[lang].about;
 
   useEffect(() => {
     fetch("/api/content").then((r) => r.json()).then(setContent).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (lang !== "en" || !content.bioShort) return;
+    setTranslated({});
+
+    const awards = content.awards || [];
+    const texts = [
+      content.bioShort || "",
+      content.bioFull || "",
+      ...awards.map((a) => a.title),
+      ...awards.map((a) => a.org),
+    ];
+
+    fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ texts }),
+    })
+      .then((r) => r.json())
+      .then(({ translations }: { translations?: string[] }) => {
+        if (!translations || translations.length !== texts.length) return;
+        setTranslated({
+          bioShort: translations[0],
+          bioFull: translations[1],
+          awards: awards.map((a, i) => ({
+            ...a,
+            title: translations[2 + i] || a.title,
+            org: translations[2 + awards.length + i] || a.org,
+          })),
+        });
+      })
+      .catch(() => {});
+  }, [lang, content.bioShort]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -92,7 +126,7 @@ export default function About() {
         }}
       >
         <div ref={titleRef}>
-          <div style={{ overflow: "hidden" }}>
+          <div style={{ overflow: "hidden", paddingBottom: "0.12em" }}>
             <h2
               className="about-line"
               style={{
@@ -108,7 +142,7 @@ export default function About() {
               {t.heading}
             </h2>
           </div>
-          <div style={{ overflow: "hidden" }}>
+          <div style={{ overflow: "hidden", paddingBottom: "0.15em" }}>
             <span
               className="about-line"
               style={{
@@ -159,7 +193,7 @@ export default function About() {
           }}
         >
           <img
-            src="/Ilona Ptak fotko.jpg"
+            src="/IlonaPtak.jpg"
             alt="Ilona Ptak"
             style={{
               position: "absolute",
@@ -246,7 +280,9 @@ export default function About() {
               marginBottom: "24px",
             }}
           >
-            {lang === "pl" ? (content.bioShort || t.bioShort) : t.bioShort}
+            {lang === "pl"
+              ? (content.bioShort || t.bioShort)
+              : (translated.bioShort || t.bioShort)}
           </p>
 
           {/* Expandable full bio */}
@@ -267,7 +303,9 @@ export default function About() {
                 paddingBottom: "24px",
               }}
             >
-              {lang === "pl" ? (content.bioFull || t.bioFull) : t.bioFull}
+              {lang === "pl"
+                ? (content.bioFull || t.bioFull)
+                : (translated.bioFull || t.bioFull)}
             </p>
           </div>
 
@@ -331,7 +369,7 @@ export default function About() {
             paddingRight: "8px",
           }}
         >
-          {(content.awards || []).map((a, i) => (
+          {(lang === "pl" ? (content.awards || []) : (translated.awards || content.awards || [])).map((a, i) => (
             <div
               key={i}
               className="award-row"

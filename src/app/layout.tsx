@@ -7,14 +7,14 @@ import Providers from "@/components/Providers";
 
 const dmSans = DM_Sans({
   variable: "--font-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   weight: ["300", "400", "500", "700"],
   display: "swap",
 });
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-serif",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   weight: ["300", "400", "600"],
   style: ["normal", "italic"],
   display: "swap",

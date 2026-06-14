@@ -91,17 +91,17 @@ export default function Hero() {
 						marginBottom: "32px",
 					}}
 				>
-					<div style={{ overflow: "hidden" }}>
+					<div style={{ overflow: "hidden", paddingBottom: "0.12em" }}>
 						<span className='hero-line' style={{ display: "block" }}>
 							{t.line1}
 						</span>
 					</div>
-					<div style={{ overflow: "hidden" }}>
+					<div style={{ overflow: "hidden", paddingBottom: "0.12em" }}>
 						<span className='hero-line' style={{ display: "block" }}>
 							{t.line2}
 						</span>
 					</div>
-					<div style={{ overflow: "hidden" }}>
+					<div style={{ overflow: "hidden", paddingBottom: "0.15em" }}>
 						<span
 							className='hero-line'
 							style={{
