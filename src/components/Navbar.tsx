@@ -16,8 +16,8 @@ export default function Navbar() {
   const t = T[lang].nav;
 
   const links = [
-    { label: t.realizacje, href: "#portfolio" },
     { label: t.uslugi, href: "#uslugi" },
+    { label: t.realizacje, href: "#portfolio" },
     { label: t.drony, href: "#drony" },
     { label: t.onas, href: "#onas" },
     { label: t.kontakt, href: "#kontakt" },
@@ -122,16 +122,15 @@ export default function Navbar() {
             border: "none",
             cursor: "pointer",
             padding: 0,
-            fontFamily: "var(--font-sans)",
-            fontWeight: 700,
-            fontSize: "15px",
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "var(--ink)",
             flexShrink: 0,
+            lineHeight: 0,
           }}
         >
-          Lotne Media
+          <img
+            src="/logo.svg"
+            alt="Lotne Media"
+            style={{ height: "44px", width: "auto", display: "block" }}
+          />
         </button>
 
         {/* Right group */}

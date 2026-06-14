@@ -10,23 +10,8 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const awards = [
-  { year: "2025", title: "Wyróżnienie — konkurs Obiektywnie Śląskie", org: "Kategoria: Film" },
-  { year: "2024", title: "Wyróżnienie — konkurs Obiektywnie Śląskie", org: "Kategoria: Film" },
-  { year: "2024", title: "II nagroda i wyróżnienie — Festiwal Filmów Górskich Adrenalinium", org: "" },
-  { year: "2024", title: "Wyróżnienie — konkurs SDP Watergate", org: "Dziennikarstwo śledcze — SDP" },
-  { year: "2023", title: "II nagroda i wyróżnienie — Festiwal Filmów Górskich Adrenalinium", org: "" },
-  { year: "2023", title: "Wyróżnienie — konkurs SDP Watergate", org: "Dziennikarstwo śledcze — SDP" },
-  { year: "2021", title: "I Nagroda im. Adolfa Bocheńskiego", org: "Stowarzyszenie Dziennikarzy Polskich" },
-  { year: "2021", title: "Wyróżnienie — Festiwal Form Dokumentalnych Nurt", org: "" },
-  { year: "2020", title: "I nagroda Rady Programowej TVP3 Katowice", org: "Reportaż: Dokąd poprowadzą nogi" },
-  { year: "2019", title: "I nagroda im. Brygidy Frosztęgi-Kmiecik", org: "26. PKD TVP — Najlepszy Reportaż Interwencyjny" },
-  { year: "2019", title: "I nagroda Rady Programowej TVP3 Katowice", org: "Reportaż: Jednooka Wojowniczka" },
-  { year: "2019", title: "Wyróżnienie specjalne — XIV Silesia Press", org: "Za odwagę i dociekliwość dziennikarską" },
-  { year: "2019", title: "II miejsce — I Festiwal Reportażu Sportowego Patyk", org: "" },
-  { year: "2018", title: "I nagroda Rady Programowej TVP3 Katowice", org: "Reportaż: Bohaterowie pod ziemią" },
-  { year: "2018", title: "Wyróżnienie — konkurs im. Bartka Zdunka", org: "Debiut Publicystyczny Roku" },
-];
+type Award = { year: string; title: string; org: string };
+type ContentData = { bioShort?: string; bioFull?: string; awards?: Award[] };
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -34,8 +19,13 @@ export default function About() {
   const featuredRef = useRef<HTMLDivElement>(null);
   const awardsRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(false);
+  const [content, setContent] = useState<ContentData>({});
   const { lang } = useLang();
   const t = T[lang].about;
+
+  useEffect(() => {
+    fetch("/api/content").then((r) => r.json()).then(setContent).catch(() => {});
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -256,7 +246,7 @@ export default function About() {
               marginBottom: "24px",
             }}
           >
-            {t.bioShort}
+            {lang === "pl" ? (content.bioShort || t.bioShort) : t.bioShort}
           </p>
 
           {/* Expandable full bio */}
@@ -277,7 +267,7 @@ export default function About() {
                 paddingBottom: "24px",
               }}
             >
-              {t.bioFull}
+              {lang === "pl" ? (content.bioFull || t.bioFull) : t.bioFull}
             </p>
           </div>
 
@@ -341,7 +331,7 @@ export default function About() {
             paddingRight: "8px",
           }}
         >
-          {awards.map((a, i) => (
+          {(content.awards || []).map((a, i) => (
             <div
               key={i}
               className="award-row"

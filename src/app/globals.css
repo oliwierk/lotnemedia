@@ -201,16 +201,11 @@ body {
   gap: 40px;
 }
 
-/* Portfolio grids */
-.grid-video {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-.grid-photo {
+/* Portfolio grid — unified symmetric 3-column */
+.grid-portfolio {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 3px;
 }
 
 /* Contact form row */
@@ -279,8 +274,7 @@ body {
   .svc-row   { grid-template-columns: 44px 1fr; gap: 20px; }
   .svc-arrow { display: none; }
 
-  .grid-video { grid-template-columns: 1fr; }
-  .grid-photo { grid-template-columns: 1fr 1fr; }
+  .grid-portfolio { grid-template-columns: repeat(2, 1fr); }
   .form-2col  { grid-template-columns: 1fr; }
 
   .section-label { display: none; }
@@ -294,8 +288,8 @@ body {
   .hero-mobile-img { height: 60vw; margin-top: 28px; }
   .section-pad { padding: 60px 20px; }
   .footer-pad  { padding: 60px 20px 40px; }
-  .cols-team  { grid-template-columns: 1fr; }
-  .grid-photo { grid-template-columns: 1fr; }
+  .cols-team      { grid-template-columns: 1fr; }
+  .grid-portfolio { grid-template-columns: 1fr; }
 }
 
 /* ── Scrollbar ───────────────────────────────────────────────────────── */

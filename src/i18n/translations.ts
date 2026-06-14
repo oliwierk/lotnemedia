@@ -110,6 +110,11 @@ export const T = {
       label: "Ludzie",
       members: [
         {
+          name: "Ilona Ptak",
+          role: "Dziennikarka · Reportażystka · Pilot drona",
+          bio: "Właścicielka Lotne Media. Od 2016 roku w TVP — autorka reportaży emitowanych na TVP1, TVP2, TVP3, TVP Info i TVP Polonia. Nauczyciel akademicki UEK, pilot drona z licencją europejską.",
+        },
+        {
           name: "Bartosz Dominik",
           role: "Operator kamery",
           bio: "Operator z wieloletnim doświadczeniem w produkcjach telewizyjnych. Specjalizuje się w zdjęciach reportażowych i ujęciach z drona.",
@@ -123,11 +128,6 @@ export const T = {
           name: "Basia Jendrzejczyk",
           role: "Fotograf",
           bio: "Fotograf reportażowy i portretowy, laureat ogólnopolskich konkursów fotograficznych. Pracuje z klientami biznesowymi i mediami.",
-        },
-        {
-          name: "Jola Gwardys",
-          role: "Dziennikarka · Reporterka",
-          bio: "Dziennikarka telewizyjna z doświadczeniem w reportażu terenowym i prowadzeniu programów informacyjnych.",
         },
       ],
     },
@@ -255,6 +255,11 @@ export const T = {
       label: "People",
       members: [
         {
+          name: "Ilona Ptak",
+          role: "Journalist · Reporter · Drone Pilot",
+          bio: "Owner of Lotne Media. Since 2016 at Polish Television — creator of reports broadcast on TVP1, TVP2, TVP3, TVP Info and TVP Polonia. Academic lecturer at UEK, licensed EU drone pilot.",
+        },
+        {
           name: "Bartosz Dominik",
           role: "Camera Operator",
           bio: "Operator with years of experience in television productions. Specialises in reportage shots and drone footage.",
@@ -268,11 +273,6 @@ export const T = {
           name: "Basia Jendrzejczyk",
           role: "Photographer",
           bio: "Reportage and portrait photographer, award-winner in national photography competitions. Works with business clients and media.",
-        },
-        {
-          name: "Jola Gwardys",
-          role: "Journalist · Reporter",
-          bio: "Television journalist with experience in field reporting and hosting news programmes.",
         },
       ],
     },

@@ -11,10 +11,10 @@ if (typeof window !== "undefined") {
 }
 
 const MEMBER_PHOTOS = [
+  "/Ilona Ptak z aparatem (2).JPG",
   "/Bartosz Dominik operator.avif",
   "/Bart Jarzab montazysta.jpg",
   "/Basia Jendrzejczyk Fotograf.jpg",
-  "/Jola Gwardys.jpeg",
 ];
 
 function TeamCard({

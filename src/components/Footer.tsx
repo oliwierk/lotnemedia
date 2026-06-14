@@ -104,7 +104,7 @@ export default function Footer() {
               fontStyle: "italic",
               fontSize: "clamp(56px, 12vw, 180px)",
               lineHeight: 0.88,
-              color: "rgba(242,237,232,0.3)",
+              color: "rgba(255,255,255,0.55)",
             }}
           >
             {t.headingItalic}
@@ -130,7 +130,7 @@ export default function Footer() {
               fontSize: "10px",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
-              color: "rgba(242,237,232,0.6)",
+              color: "rgba(255,255,255,0.65)",
               marginBottom: "12px",
             }}
           >
@@ -166,7 +166,7 @@ export default function Footer() {
               fontSize: "10px",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
-              color: "rgba(242,237,232,0.6)",
+              color: "rgba(255,255,255,0.65)",
               marginBottom: "12px",
             }}
           >
@@ -205,7 +205,7 @@ export default function Footer() {
               fontSize: "10px",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
-              color: "rgba(242,237,232,0.6)",
+              color: "rgba(255,255,255,0.65)",
               marginBottom: "12px",
             }}
           >
@@ -222,7 +222,7 @@ export default function Footer() {
                 style={{
                   fontFamily: "var(--font-sans)",
                   fontSize: "15px",
-                  color: "rgba(242,237,232,0.6)",
+                  color: "rgba(255,255,255,0.65)",
                   textDecoration: "none",
                   transition: "color 0.3s ease",
                   display: "flex",
@@ -259,27 +259,27 @@ export default function Footer() {
           justifyContent: "space-between",
           alignItems: "center",
           flexWrap: "wrap",
-          gap: "12px",
+          gap: "16px",
           paddingTop: "32px",
-          borderTop: "1px solid rgba(242,237,232,0.08)",
+          borderTop: "1px solid rgba(242,237,232,0.12)",
         }}
       >
-        <span
+        <img
+          src="/logo.svg"
+          alt="Lotne Media"
           style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "11px",
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "rgba(242,237,232,0.25)",
+            height: "38px",
+            width: "auto",
+            display: "block",
+            filter: "brightness(0) invert(1)",
           }}
-        >
-          Ilona Ptak · Lotne Media
-        </span>
+        />
         <span
           style={{
             fontFamily: "var(--font-sans)",
             fontSize: "11px",
-            color: "rgba(242,237,232,0.25)",
+            color: "#ffffff",
+            letterSpacing: "0.04em",
           }}
         >
           NIP 6292401050 · REGON — · Katowice · © {new Date().getFullYear()}

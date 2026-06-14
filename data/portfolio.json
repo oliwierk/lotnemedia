@@ -1,0 +1,122 @@
+[
+  {
+    "id": "r1",
+    "type": "video",
+    "title": "Reportaż — Festiwal Kultury",
+    "category": "Film",
+    "youtubeId": "dQw4w9WgXcQ",
+    "bg": "#1a1a1a",
+    "thumbnail": "/ERP1.png"
+  },
+  {
+    "id": "r2",
+    "type": "video",
+    "title": "Reportaż — Rok Chopinowski",
+    "category": "Film",
+    "youtubeId": "dQw4w9WgXcQ",
+    "bg": "#181818",
+    "thumbnail": "/ERP2.png"
+  },
+  {
+    "id": "pod1",
+    "type": "video",
+    "title": "Podcast — Studio Rozmów",
+    "category": "Podcast",
+    "youtubeId": "dQw4w9WgXcQ",
+    "bg": "#1e1c1b",
+    "thumbnail": "/ERP3.png"
+  },
+  {
+    "id": "pod2",
+    "type": "video",
+    "title": "Podcast — Kultura Mówi",
+    "category": "Podcast",
+    "youtubeId": "dQw4w9WgXcQ",
+    "bg": "#1c1a19",
+    "thumbnail": "/ERP4.png"
+  },
+  {
+    "id": "e1",
+    "type": "video",
+    "title": "Konferencja — Forum Mediów",
+    "category": "Event",
+    "youtubeId": "dQw4w9WgXcQ",
+    "bg": "#1a1a1a",
+    "thumbnail": "/mikrofony  konferencji.jpeg"
+  },
+  {
+    "id": "e2",
+    "type": "video",
+    "title": "Gala Biznesu 2024",
+    "category": "Event",
+    "youtubeId": "dQw4w9WgXcQ",
+    "bg": "#1d1b1a",
+    "thumbnail": ""
+  },
+  {
+    "id": "f1",
+    "type": "photo",
+    "title": "Portret — Ilona Ptak z aparatem",
+    "category": "Foto",
+    "bg": "#2c2926",
+    "thumbnail": "/Ilona Ptak z aparatem (2).JPG"
+  },
+  {
+    "id": "f2",
+    "type": "photo",
+    "title": "Reportaż — Spiżarnia",
+    "category": "Foto",
+    "bg": "#222022",
+    "thumbnail": "/spiżarnia.jpeg"
+  },
+  {
+    "id": "f3",
+    "type": "photo",
+    "title": "Patyk Festiwal — na scenie",
+    "category": "Foto",
+    "bg": "#252220",
+    "thumbnail": "/Patyk festiwal na scenie.jpg"
+  },
+  {
+    "id": "f4",
+    "type": "photo",
+    "title": "Nagroda Patyk — Opole",
+    "category": "Foto",
+    "bg": "#1e1c1a",
+    "thumbnail": "/Nagroda Patyk Opole Ilona Ptak.jpg"
+  },
+  {
+    "id": "f5",
+    "type": "photo",
+    "title": "Wyróżnienie — Silesia Press",
+    "category": "Foto",
+    "bg": "#1a1a1a",
+    "thumbnail": "/Ilona Ptak nagroda Silesia Press.jpg"
+  },
+  {
+    "id": "f6",
+    "type": "photo",
+    "title": "W trakcie zdjęć",
+    "category": "Foto",
+    "bg": "#202020",
+    "thumbnail": "/Ilona Ptak w trakcie zdjec6.jpg"
+  },
+  {
+    "id": "d1",
+    "type": "video",
+    "title": "Ujęcia z powietrza — Katowice",
+    "category": "Dron",
+    "youtubeId": "dQw4w9WgXcQ",
+    "bg": "#171820",
+    "thumbnail": "/Ilona Ptak spadochron3.jpg"
+  },
+  {
+    "id": "d2",
+    "type": "video",
+    "title": "Panorama — Górny Śląsk",
+    "category": "Dron",
+    "youtubeId": "dQw4w9WgXcQ",
+    "bg": "#14151e",
+    "thumbnail": ""
+  }
+]
