@@ -4,7 +4,8 @@ import path from "path";
 
 function checkAuth(request: Request) {
   const key = request.headers.get("x-admin-key");
-  return key === (process.env.ADMIN_PASSWORD || "lotnemedia2025");
+  const pw = process.env.ADMIN_PASSWORD;
+  return !!pw && key === pw;
 }
 
 export async function POST(request: Request) {

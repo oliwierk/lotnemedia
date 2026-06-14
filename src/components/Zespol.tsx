@@ -11,7 +11,7 @@ if (typeof window !== "undefined") {
 }
 
 const MEMBER_PHOTOS = [
-  "/Ilona Ptak z aparatem (2).JPG",
+  "/Kamera Ilona Ptak.jpg",
   "/Bartosz Dominik operator.avif",
   "/Bart Jarzab montazysta.jpg",
   "/Basia Jendrzejczyk Fotograf.jpg",

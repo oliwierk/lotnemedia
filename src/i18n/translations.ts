@@ -77,7 +77,7 @@ export const T = {
     },
     drony: {
       heading: "Drony",
-      headingItalic: "z powietrza.",
+      headingItalic: "",
       label: "Aerial",
       text1:
         "Tworzymy ujęcia z powietrza, które zmieniają perspektywę. Profesjonalne drony z kamerami 4K pozwalają uchwycić to, czego kamera na ziemi nigdy nie zobaczy.",
@@ -85,7 +85,7 @@ export const T = {
         "Nasi piloci posiadają licencje wymagane przepisami UE. Operujemy na terenie całej Polski i Europy — od pejzaży krajobrazowych po dynamiczne ujęcia eventów.",
       stats: [
         { value: "4K", label: "Rozdzielczość nagrań" },
-        { value: "EU", label: "Licencja pilota drona" },
+        { value: "A2 EASA", label: "Uprawnienia pilota" },
         { value: "100+", label: "Lotnych realizacji" },
       ],
     },
@@ -221,8 +221,8 @@ export const T = {
       ],
     },
     drony: {
-      heading: "Drone",
-      headingItalic: "from above.",
+      heading: "Drones",
+      headingItalic: "",
       label: "Aerial",
       text1:
         "We create aerial footage that changes perspective. Professional drones with 4K cameras capture what no ground-level camera can.",
@@ -230,7 +230,7 @@ export const T = {
         "Our pilots hold EU-required licences and operate across Poland and Europe — from scenic landscapes to dynamic event coverage.",
       stats: [
         { value: "4K", label: "Recording resolution" },
-        { value: "EU", label: "Drone pilot licence" },
+        { value: "A2 EASA", label: "Pilot category" },
         { value: "100+", label: "Aerial productions" },
       ],
     },

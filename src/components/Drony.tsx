@@ -119,22 +119,24 @@ export default function Drony() {
                 {t.heading}
               </h2>
             </div>
-            <div style={{ overflow: "hidden" }}>
-              <span
-                className="drone-line"
-                style={{
-                  display: "block",
-                  fontFamily: "var(--font-serif)",
-                  fontWeight: 300,
-                  fontStyle: "italic",
-                  fontSize: "clamp(40px, 6vw, 88px)",
-                  lineHeight: 0.95,
-                  color: "rgba(242,237,232,0.55)",
-                }}
-              >
-                {t.headingItalic}
-              </span>
-            </div>
+            {t.headingItalic && (
+              <div style={{ overflow: "hidden" }}>
+                <span
+                  className="drone-line"
+                  style={{
+                    display: "block",
+                    fontFamily: "var(--font-serif)",
+                    fontWeight: 300,
+                    fontStyle: "italic",
+                    fontSize: "clamp(40px, 6vw, 88px)",
+                    lineHeight: 0.95,
+                    color: "rgba(242,237,232,0.55)",
+                  }}
+                >
+                  {t.headingItalic}
+                </span>
+              </div>
+            )}
           </div>
 
           <span
