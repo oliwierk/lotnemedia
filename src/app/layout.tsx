@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import ConditionalNavbar from "@/components/ConditionalNavbar";
 import PageOverlay from "@/components/PageOverlay";
 import Providers from "@/components/Providers";
 
@@ -43,7 +43,7 @@ export default function RootLayout({
       <body style={{ fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
         <Providers>
           <PageOverlay />
-          <Navbar />
+          <ConditionalNavbar />
           {children}
         </Providers>
       </body>
