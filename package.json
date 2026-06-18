@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@next/swc-darwin-x64": "^16.2.6",
     "@types/gsap": "^1.20.2",
     "@types/qrcode": "^1.5.6",
     "gsap": "^3.15.0",
