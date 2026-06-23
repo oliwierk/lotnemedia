@@ -190,7 +190,7 @@ export default function Portfolio() {
       </div>
 
       {/* Filters */}
-      <div style={{ display: "flex", gap: "8px", marginBottom: "40px", flexWrap: "wrap" }}>
+      <div className="portfolio-filters">
         {FILTERS.map((f, fi) => (
           <button
             key={f}

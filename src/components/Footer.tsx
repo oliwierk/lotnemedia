@@ -76,10 +76,10 @@ export default function Footer() {
       }}
     >
       {/* Giant contact headline */}
-      <div ref={bigTextRef} style={{ marginBottom: "80px" }}>
+      <div ref={bigTextRef} className="footer-headline" style={{ marginBottom: "80px" }}>
         <div style={{ overflow: "hidden" }}>
           <h2
-            className="footer-line"
+            className="footer-line footer-heading-text"
             style={{
               display: "block",
               fontFamily: "var(--font-sans)",
@@ -96,7 +96,7 @@ export default function Footer() {
         </div>
         <div style={{ overflow: "hidden" }}>
           <span
-            className="footer-line"
+            className="footer-line footer-heading-text"
             style={{
               display: "block",
               fontFamily: "var(--font-serif)",

@@ -68,6 +68,7 @@ export default function Services() {
       style={{ background: "var(--bg)", position: "relative" }}
     >
       <div
+        className="svc-header"
         style={{
           display: "flex",
           alignItems: "baseline",

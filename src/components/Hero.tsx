@@ -132,42 +132,6 @@ export default function Hero() {
 					{t.subtitle}
 				</p>
 
-				{/* Mobile-only hero image */}
-				<div className='hero-mobile-img'>
-					<img
-						src='/Kamera Ilona Ptak.jpg'
-						alt='Produkcja wideo — Lotne Media'
-						loading='eager'
-						style={{
-							width: "100%",
-							height: "100%",
-							objectFit: "cover",
-							display: "block",
-						}}
-					/>
-					<div
-						style={{
-							position: "absolute",
-							inset: 0,
-							background:
-								"linear-gradient(to top, rgba(13,13,13,0.45) 0%, transparent 60%)",
-						}}
-					/>
-					<span
-						style={{
-							position: "absolute",
-							bottom: 14,
-							left: 16,
-							fontFamily: "var(--font-sans)",
-							fontSize: 9,
-							letterSpacing: "0.18em",
-							textTransform: "uppercase",
-							color: "rgba(255,255,255,0.7)",
-						}}
-					>
-						Lotne Media
-					</span>
-				</div>
 			</div>
 
 			{/* Right column — stacked images grid */}
@@ -316,6 +280,7 @@ export default function Hero() {
 			{/* Scroll hint */}
 			<div
 				ref={scrollHintRef}
+				className='hero-scroll-hint'
 				style={{
 					position: "absolute",
 					bottom: "40px",

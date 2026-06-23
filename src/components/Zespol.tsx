@@ -27,7 +27,9 @@ function TeamCard({
 	delay: number;
 }) {
 	const [hovered, setHovered] = useState(false);
+	const [tapped, setTapped] = useState(false);
 	const cardRef = useRef<HTMLDivElement>(null);
+	const active = hovered || tapped;
 
 	useEffect(() => {
 		if (!cardRef.current) return;
@@ -60,6 +62,7 @@ function TeamCard({
 				}}
 				onMouseEnter={() => setHovered(true)}
 				onMouseLeave={() => setHovered(false)}
+				onClick={() => setTapped((prev) => !prev)}
 			>
 				<img
 					src={photo}
@@ -83,13 +86,36 @@ function TeamCard({
 					}}
 				/>
 
-				{/* Hover bio overlay */}
+				{/* Tap hint on mobile */}
+				<div
+					className="team-tap-hint"
+					style={{
+						position: "absolute",
+						bottom: 12,
+						right: 12,
+						width: 28,
+						height: 28,
+						borderRadius: "50%",
+						background: "rgba(255,255,255,0.15)",
+						display: "none",
+						alignItems: "center",
+						justifyContent: "center",
+						opacity: active ? 0 : 0.7,
+						transition: "opacity 0.3s ease",
+					}}
+				>
+					<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+						<path d="M7 3v8M3 7h8" stroke="rgba(255,255,255,0.9)" strokeWidth="1.2" strokeLinecap="round" />
+					</svg>
+				</div>
+
+				{/* Bio overlay */}
 				<div
 					style={{
 						position: "absolute",
 						inset: 0,
 						background: "rgba(13,13,13,0.72)",
-						opacity: hovered ? 1 : 0,
+						opacity: active ? 1 : 0,
 						transition: "opacity 0.4s ease",
 						display: "flex",
 						alignItems: "flex-end",
@@ -102,7 +128,7 @@ function TeamCard({
 							fontSize: "13px",
 							lineHeight: 1.65,
 							color: "rgba(242,237,232,0.9)",
-							transform: hovered ? "translateY(0)" : "translateY(12px)",
+							transform: active ? "translateY(0)" : "translateY(12px)",
 							transition: "transform 0.4s ease",
 						}}
 					>
