@@ -29,6 +29,16 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Panel admina i baza danych
+
+Panel `/admin` loguje się przez `ADMIN_USERNAME` / `ADMIN_PASSWORD` (plik `.env.local`). Treść strony domyślnie jest trzymana w plikach `data/content.json` i `data/portfolio.json`.
+
+Po założeniu bazy MySQL na hostingu:
+
+1. Uzupełnij w `.env.local` (lokalnie) i w zmiennych środowiskowych na hostingu: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`.
+2. Uruchom `npm run db:migrate` — utworzy tabele (`sql/schema.sql`) i zaimportuje dane z `data/*.json` (bezpieczne do wielokrotnego odpalenia, nie nadpisze istniejących danych w bazie).
+3. Gdy `DB_HOST` jest ustawione, panel automatycznie czyta i zapisuje z bazy zamiast plików JSON — nie trzeba nic zmieniać w kodzie.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

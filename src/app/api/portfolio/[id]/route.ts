@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const DATA_PATH = path.join(process.cwd(), "data", "portfolio.json");
+import { updateItem, deleteItem } from "@/lib/portfolio-store";
 
 function checkAuth(request: Request) {
   const key = request.headers.get("x-admin-key");
@@ -14,19 +11,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   if (!checkAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;
   const body = await request.json();
-  const data: Record<string, unknown>[] = JSON.parse(fs.readFileSync(DATA_PATH, "utf-8"));
-  const idx = data.findIndex((it) => it.id === id);
-  if (idx === -1) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  data[idx] = { ...data[idx], ...body, id };
-  fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2));
-  return NextResponse.json(data[idx]);
+  const updated = await updateItem(id, body);
+  if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json(updated);
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!checkAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;
-  const data: Record<string, unknown>[] = JSON.parse(fs.readFileSync(DATA_PATH, "utf-8"));
-  const filtered = data.filter((it) => it.id !== id);
-  fs.writeFileSync(DATA_PATH, JSON.stringify(filtered, null, 2));
+  await deleteItem(id);
   return NextResponse.json({ ok: true });
 }

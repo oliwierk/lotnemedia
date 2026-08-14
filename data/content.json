@@ -2,20 +2,80 @@
   "bioShort": "Od 2016 roku w Telewizji Polskiej — twórczyni reportaży interwencyjnych, społecznych i kulturowych emitowanych na TVP1, TVP2, TVP3, TVP Info i TVP Polonia. Nauczyciel akademicki UEK, pilot drona z licencją europejską, właścicielka Lotne Media.",
   "bioFull": "Absolwentka Dziennikarstwa na Uniwersytecie Ekonomicznym i Śląskim w Katowicach. Od 2021 roku nauczyciel akademicki na Wydziale Informatyki i Ekonometrii UEK, prowadząca przedmioty ze storytellingu cyfrowego, montażu filmowego i warsztatu telewizyjno-radiowego. Przygotowuje rozprawę doktorską. Autorka książki naukowej o roli youtuberów w dziennikarstwie śledczym na przykładzie afery Pandora Gate. Właścicielka Lotne Media, studia specjalizującego się w produkcji wideo, podcastów i fotografii dla mediów i biznesu.",
   "awards": [
-    { "year": "2025", "title": "Wyróżnienie — konkurs Obiektywnie Śląskie", "org": "Kategoria: Film" },
-    { "year": "2024", "title": "Wyróżnienie — konkurs Obiektywnie Śląskie", "org": "Kategoria: Film" },
-    { "year": "2024", "title": "II nagroda i wyróżnienie — Festiwal Filmów Górskich Adrenalinium", "org": "" },
-    { "year": "2024", "title": "Wyróżnienie — konkurs SDP Watergate", "org": "Dziennikarstwo śledcze — SDP" },
-    { "year": "2023", "title": "II nagroda i wyróżnienie — Festiwal Filmów Górskich Adrenalinium", "org": "" },
-    { "year": "2023", "title": "Wyróżnienie — konkurs SDP Watergate", "org": "Dziennikarstwo śledcze — SDP" },
-    { "year": "2021", "title": "I Nagroda im. Adolfa Bocheńskiego", "org": "Stowarzyszenie Dziennikarzy Polskich" },
-    { "year": "2021", "title": "Wyróżnienie — Festiwal Form Dokumentalnych Nurt", "org": "" },
-    { "year": "2020", "title": "I nagroda Rady Programowej TVP3 Katowice", "org": "Reportaż: Dokąd poprowadzą nogi" },
-    { "year": "2019", "title": "I nagroda im. Brygidy Frosztęgi-Kmiecik", "org": "26. PKD TVP — Najlepszy Reportaż Interwencyjny" },
-    { "year": "2019", "title": "I nagroda Rady Programowej TVP3 Katowice", "org": "Reportaż: Jednooka Wojowniczka" },
-    { "year": "2019", "title": "Wyróżnienie specjalne — XIV Silesia Press", "org": "Za odwagę i dociekliwość dziennikarską" },
-    { "year": "2019", "title": "II miejsce — I Festiwal Reportażu Sportowego Patyk", "org": "" },
-    { "year": "2018", "title": "I nagroda Rady Programowej TVP3 Katowice", "org": "Reportaż: Bohaterowie pod ziemią" },
-    { "year": "2018", "title": "Wyróżnienie — konkurs im. Bartka Zdunka", "org": "Debiut Publicystyczny Roku" }
+    {
+      "year": "2025",
+      "title": "Wyróżnienie — konkurs Obiektywnie Śląskie",
+      "org": "Kategoria: Film"
+    },
+    {
+      "year": "2024",
+      "title": "Wyróżnienie — konkurs Obiektywnie Śląskie",
+      "org": "Kategoria: Film"
+    },
+    {
+      "year": "2024",
+      "title": "II nagroda i wyróżnienie — Festiwal Filmów Górskich Adrenalinium",
+      "org": ""
+    },
+    {
+      "year": "2024",
+      "title": "Wyróżnienie — konkurs SDP Watergate",
+      "org": "Dziennikarstwo śledcze — SDP"
+    },
+    {
+      "year": "2023",
+      "title": "II nagroda i wyróżnienie — Festiwal Filmów Górskich Adrenalinium",
+      "org": ""
+    },
+    {
+      "year": "2023",
+      "title": "Wyróżnienie — konkurs SDP Watergate",
+      "org": "Dziennikarstwo śledcze — SDP"
+    },
+    {
+      "year": "2021",
+      "title": "I Nagroda im. Adolfa Bocheńskiego",
+      "org": "Stowarzyszenie Dziennikarzy Polskich"
+    },
+    {
+      "year": "2021",
+      "title": "Wyróżnienie — Festiwal Form Dokumentalnych Nurt",
+      "org": ""
+    },
+    {
+      "year": "2020",
+      "title": "I nagroda Rady Programowej TVP3 Katowice",
+      "org": "Reportaż: Dokąd poprowadzą nogi"
+    },
+    {
+      "year": "2019",
+      "title": "I nagroda im. Brygidy Frosztęgi-Kmiecik",
+      "org": "26. PKD TVP — Najlepszy Reportaż Interwencyjny"
+    },
+    {
+      "year": "2019",
+      "title": "I nagroda Rady Programowej TVP3 Katowice",
+      "org": "Reportaż: Jednooka Wojowniczka"
+    },
+    {
+      "year": "2019",
+      "title": "Wyróżnienie specjalne — XIV Silesia Press",
+      "org": "Za odwagę i dociekliwość dziennikarską"
+    },
+    {
+      "year": "2019",
+      "title": "II miejsce — I Festiwal Reportażu Sportowego Patyk",
+      "org": ""
+    },
+    {
+      "year": "2018",
+      "title": "I nagroda Rady Programowej TVP3 Katowice",
+      "org": "Reportaż: Bohaterowie pod ziemią"
+    },
+    {
+      "year": "2018",
+      "title": "Wyróżnienie — konkurs im. Bartka Zdunka",
+      "org": "Debiut Publicystyczny Roku"
+    }
   ]
 }

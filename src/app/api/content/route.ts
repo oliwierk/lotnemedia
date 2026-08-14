@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const DATA_PATH = path.join(process.cwd(), "data", "content.json");
+import { getContent, updateContent } from "@/lib/content-store";
 
 function checkAuth(request: Request) {
   const key = request.headers.get("x-admin-key");
@@ -11,15 +8,13 @@ function checkAuth(request: Request) {
 }
 
 export async function GET() {
-  const data = JSON.parse(fs.readFileSync(DATA_PATH, "utf-8"));
+  const data = await getContent();
   return NextResponse.json(data);
 }
 
 export async function PUT(request: Request) {
   if (!checkAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await request.json();
-  const current = JSON.parse(fs.readFileSync(DATA_PATH, "utf-8"));
-  const updated = { ...current, ...body };
-  fs.writeFileSync(DATA_PATH, JSON.stringify(updated, null, 2));
+  const updated = await updateContent(body);
   return NextResponse.json(updated);
 }

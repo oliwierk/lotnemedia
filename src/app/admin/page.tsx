@@ -92,6 +92,7 @@ const S: Record<string, React.CSSProperties> = {
 
 /* ─── Login ─── */
 function LoginScreen({ onAuth }: { onAuth: (pw: string) => void }) {
+  const [user, setUser] = useState("");
   const [pw, setPw] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
@@ -100,9 +101,9 @@ function LoginScreen({ onAuth }: { onAuth: (pw: string) => void }) {
     e.preventDefault();
     setLoading(true);
     setErr("");
-    const res = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: pw }) });
+    const res = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: user, password: pw }) });
     setLoading(false);
-    if (res.ok) { onAuth(pw); } else { setErr("Nieprawidłowe hasło"); }
+    if (res.ok) { onAuth(pw); } else { setErr("Nieprawidłowy użytkownik lub hasło"); }
   }
 
   return (
@@ -111,8 +112,10 @@ function LoginScreen({ onAuth }: { onAuth: (pw: string) => void }) {
         <p style={S.loginTitle}>Panel admina</p>
         <p style={S.loginSub}>Lotne Media — CMS</p>
         <form onSubmit={handleLogin}>
-          <label style={{ ...S.label, marginTop: 0 }}>Hasło</label>
-          <input style={S.input} type="password" value={pw} onChange={(e) => setPw(e.target.value)} autoFocus placeholder="••••••••" />
+          <label style={{ ...S.label, marginTop: 0 }}>Użytkownik</label>
+          <input style={S.input} type="text" value={user} onChange={(e) => setUser(e.target.value)} autoFocus placeholder="użytkownik" autoComplete="username" />
+          <label style={S.label}>Hasło</label>
+          <input style={S.input} type="password" value={pw} onChange={(e) => setPw(e.target.value)} placeholder="••••••••" autoComplete="current-password" />
           {err && <p style={S.errorMsg}>{err}</p>}
           <div style={{ marginTop: 24 }}>
             <button type="submit" style={{ ...btnStyle("primary"), width: "100%", padding: "12px" }} disabled={loading}>
