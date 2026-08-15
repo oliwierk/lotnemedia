@@ -35,6 +35,17 @@ const CATEGORIES = ["Film", "Podcast", "Event", "Foto", "Dron"];
 const TABS = ["Galeria", "Teksty", "Bio", "Nagrody"] as const;
 type Tab = (typeof TABS)[number];
 
+/** Wyciąga komunikat błędu z odpowiedzi serwera — inaczej widać tylko „nie udało się". */
+async function errorFrom(res: Response): Promise<string> {
+  try {
+    const data = await res.json();
+    if (data && typeof data.error === "string") return data.error;
+  } catch {
+    // odpowiedź bez JSON-a
+  }
+  return `Błąd serwera (${res.status})`;
+}
+
 /* ─── style helpers ─── */
 function navBtnStyle(active: boolean): React.CSSProperties {
   return {
@@ -150,9 +161,10 @@ function ThumbField({ value, onChange, adminKey }: { value: string; onChange: (u
     const fd = new FormData();
     fd.append("file", file);
     const res = await fetch(apiUrl("upload"), { method: "POST", headers: { "x-admin-key": adminKey }, body: fd });
+    setUploading(false);
+    if (!res.ok) { alert(await errorFrom(res)); return; }
     const { url } = await res.json();
     onChange(url);
-    setUploading(false);
   }
 
   return (
@@ -236,14 +248,15 @@ function GaleriaTab({ adminKey }: { adminKey: string }) {
 
   async function handleAdd(data: Omit<PortfolioItem, "id">) {
     const res = await fetch(apiUrl("portfolio"), { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify(data) });
+    if (!res.ok) { alert(await errorFrom(res)); return; }
     const item = await res.json();
-    if (item.dbSynced === false) alert("Zapisano na stronie, ale baza jest niedostępna — zmiana może zniknąć po wgraniu nowej wersji.");
     setItems((p) => [...p, item]);
     setModal(null);
   }
 
   async function handleEdit(id: string, data: Omit<PortfolioItem, "id">) {
     const res = await fetch(apiItemUrl(id, "PUT"), { method: apiItemMethod("PUT"), headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify(data) });
+    if (!res.ok) { alert(await errorFrom(res)); return; }
     const updated = await res.json();
     setItems((p) => p.map((it) => (it.id === id ? updated : it)));
     setModal(null);
@@ -497,16 +510,10 @@ function TekstyTab({ adminKey }: { adminKey: string }) {
     });
     setSaving(false);
     if (!res.ok) {
-      alert("Nie udało się zapisać zmian.");
+      setDbWarning(await errorFrom(res));
       return;
     }
-    // Treść zapisuje się w pliku zawsze; baza to trwała kopia i może być chwilowo niedostępna.
-    const result = await res.json().catch(() => null);
-    setDbWarning(
-      result && result.dbSynced === false
-        ? "Zapisano na stronie, ale nie udało się zapisać do bazy. Zmiana może zniknąć po wgraniu nowej wersji."
-        : ""
-    );
+    setDbWarning("");
     setDirty(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
@@ -670,8 +677,9 @@ function BioTab({ adminKey }: { adminKey: string }) {
 
   async function handleSave() {
     setSaving(true);
-    await fetch(apiUrl("content"), { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify({ bioShort, bioFull }) });
+    const res = await fetch(apiUrl("content"), { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify({ bioShort, bioFull }) });
     setSaving(false);
+    if (!res.ok) { alert(await errorFrom(res)); return; }
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }
@@ -735,8 +743,9 @@ function NagrodaTab({ adminKey }: { adminKey: string }) {
 
   async function saveAwards(updated: Award[]) {
     setSaving(true);
-    await fetch(apiUrl("content"), { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify({ awards: updated }) });
+    const res = await fetch(apiUrl("content"), { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify({ awards: updated }) });
     setSaving(false);
+    if (!res.ok) { alert(await errorFrom(res)); return; }
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }

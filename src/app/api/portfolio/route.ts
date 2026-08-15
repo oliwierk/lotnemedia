@@ -13,6 +13,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   if (!checkAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const item = await createItem(await request.json());
-  return NextResponse.json(item, { status: 201 });
+  try {
+    const item = await createItem(await request.json());
+    return NextResponse.json(item, { status: 201 });
+  } catch (err) {
+    console.error("Nie udało się dodać pozycji:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Zapis nie powiódł się" },
+      { status: 500 }
+    );
+  }
 }

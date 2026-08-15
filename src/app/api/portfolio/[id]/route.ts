@@ -10,14 +10,30 @@ function checkAuth(request: Request) {
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!checkAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;
-  const item = await updateItem(id, await request.json());
-  if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(item);
+  try {
+    const item = await updateItem(id, await request.json());
+    if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json(item);
+  } catch (err) {
+    console.error("Nie udało się zapisać pozycji:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Zapis nie powiódł się" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!checkAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;
-  await deleteItem(id);
-  return NextResponse.json({ ok: true });
+  try {
+    await deleteItem(id);
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("Nie udało się usunąć pozycji:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Usunięcie nie powiodło się" },
+      { status: 500 }
+    );
+  }
 }

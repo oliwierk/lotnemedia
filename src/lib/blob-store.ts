@@ -13,8 +13,20 @@ import { get, put } from "@vercel/blob";
  * inaczej zmiana z panelu bywałaby widoczna dopiero po kilkudziesięciu minutach.
  */
 
+/**
+ * Vercel udostępnia magazyn na dwa sposoby:
+ *  - BLOB_STORE_ID + token OIDC — tak jest domyślnie po podłączeniu magazynu do projektu,
+ *  - BLOB_READ_WRITE_TOKEN — stały token, używany poza Vercelem (np. lokalnie).
+ * Sprawdzanie tylko drugiej zmiennej powodowało próbę zapisu na dysk,
+ * który na Vercelu jest tylko do odczytu.
+ */
 export function isBlobConfigured(): boolean {
-  return !!process.env.BLOB_READ_WRITE_TOKEN;
+  return !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+}
+
+/** Czy kod działa na Vercelu, gdzie zapis na dysk jest niemożliwy. */
+export function isReadOnlyFs(): boolean {
+  return !!process.env.VERCEL;
 }
 
 /** Ścieżki w magazynie. Stałe, bez losowego sufiksu — zawsze nadpisujemy ten sam plik. */
@@ -61,6 +73,12 @@ export async function readJsonBlob<T>(pathname: string, localPath: string, fallb
 /** Zapis pliku JSON do Blob (albo na dysk, gdy nie ma tokenu). */
 export async function writeJsonBlob<T>(pathname: string, localPath: string, data: T): Promise<void> {
   if (!isBlobConfigured()) {
+    if (isReadOnlyFs()) {
+      throw new Error(
+        "Brak podłączonego magazynu Vercel Blob — bez niego nie da się nic zapisać. " +
+          "W panelu Vercela: Storage → utwórz magazyn Blob (Public) → Connect to Project → Redeploy."
+      );
+    }
     writeLocal(localPath, data);
     return;
   }

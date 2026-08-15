@@ -51,6 +51,7 @@ export async function POST(request: Request) {
 
   const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
 
+  try {
   if (isBlobConfigured()) {
     // Losowy sufiks w nazwie mamy własny, więc wyłączamy dodatkowy od SDK.
     const blob = await put(`uploads/${name}`, file, {
@@ -65,4 +66,11 @@ export async function POST(request: Request) {
   fs.mkdirSync(uploadDir, { recursive: true });
   fs.writeFileSync(path.join(uploadDir, name), Buffer.from(await file.arrayBuffer()));
   return NextResponse.json({ url: `/uploads/${name}` });
+  } catch (err) {
+    console.error("Wgrywanie pliku nie powiodło się:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Wgrywanie nie powiodło się" },
+      { status: 500 }
+    );
+  }
 }
