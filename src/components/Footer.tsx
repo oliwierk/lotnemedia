@@ -4,15 +4,12 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import QRCode from "qrcode";
-import { useLang } from "@/context/LangContext";
-import { T } from "@/i18n/translations";
+import { useLang, useT } from "@/context/LangContext";
+import { telUri } from "@/lib/phone";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
-
-const PHONE_TEL = "tel:+48512555780";
-const EMAIL = "kontakt@lotnemedia.pl";
 
 export default function Footer() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -20,7 +17,8 @@ export default function Footer() {
   const detailsRef = useRef<HTMLDivElement>(null);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
   const { lang } = useLang();
-  const t = T[lang].contact;
+  const t = useT().contact;
+  const phoneUri = telUri(t.phone);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -54,14 +52,17 @@ export default function Footer() {
       );
     }
 
-    if (qrCanvasRef.current) {
-      QRCode.toCanvas(qrCanvasRef.current, PHONE_TEL, {
+    // Kod QR zawiera adres tel:, więc po zeskanowaniu telefon proponuje połączenie.
+    if (qrCanvasRef.current && phoneUri) {
+      QRCode.toCanvas(qrCanvasRef.current, phoneUri, {
         width: 96,
         margin: 1,
+        // Wyższa korekcja błędów — kod pozostaje czytelny nawet przy gorszym ujęciu.
+        errorCorrectionLevel: "M",
         color: { dark: "#f2ede8", light: "#0d0d0d" },
       });
     }
-  }, []);
+  }, [phoneUri]);
 
   return (
     <footer
@@ -137,7 +138,7 @@ export default function Footer() {
             {t.emailLabel}
           </p>
           <a
-            href={`mailto:${EMAIL}`}
+            href={`mailto:${t.email}`}
             style={{
               fontFamily: "var(--font-sans)",
               fontSize: "clamp(14px, 1.6vw, 20px)",
@@ -154,7 +155,7 @@ export default function Footer() {
               ((e.target as HTMLAnchorElement).style.borderColor = "rgba(242,237,232,0.3)")
             }
           >
-            {EMAIL}
+            {t.email}
           </a>
         </div>
 
@@ -180,7 +181,12 @@ export default function Footer() {
                 lineHeight: 0,
               }}
             >
-              <canvas ref={qrCanvasRef} style={{ display: "block" }} />
+              <canvas
+                ref={qrCanvasRef}
+                role="img"
+                aria-label={t.phoneScan}
+                style={{ display: "block" }}
+              />
             </div>
             <p
               style={{
@@ -213,8 +219,8 @@ export default function Footer() {
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {[
-              { label: "Facebook", href: "#" },
-              { label: "YouTube", href: "#" },
+              { label: "Facebook", href: t.facebook },
+              { label: "YouTube", href: t.youtube },
             ].map((s) => (
               <a
                 key={s.label}

@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { useLang } from "@/context/LangContext";
-import { T } from "@/i18n/translations";
+import { useLang, useT } from "@/context/LangContext";
 
 export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
@@ -13,7 +12,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { lang, toggle } = useLang();
-  const t = T[lang].nav;
+  const t = useT().nav;
 
   const links = [
     { label: t.uslugi, href: "#uslugi" },

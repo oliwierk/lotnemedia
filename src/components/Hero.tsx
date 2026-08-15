@@ -2,8 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { useLang } from "@/context/LangContext";
-import { T } from "@/i18n/translations";
+import { useLang, useT } from "@/context/LangContext";
 
 export default function Hero() {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -13,8 +12,7 @@ export default function Hero() {
 	const img2Ref = useRef<HTMLDivElement>(null);
 	const img3Ref = useRef<HTMLDivElement>(null);
 	const scrollHintRef = useRef<HTMLDivElement>(null);
-	const { lang } = useLang();
-	const t = T[lang].hero;
+	const t = useT().hero;
 
 	useEffect(() => {
 		const tl = gsap.timeline({ delay: 1.0 });

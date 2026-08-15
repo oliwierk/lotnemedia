@@ -3,8 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLang } from "@/context/LangContext";
-import { T } from "@/i18n/translations";
+import { useLang, useT } from "@/context/LangContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -14,8 +13,7 @@ export default function Process() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const { lang } = useLang();
-  const t = T[lang].process;
+  const t = useT().process;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);

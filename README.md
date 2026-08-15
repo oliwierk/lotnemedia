@@ -29,9 +29,42 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Wdrożenie
+
+Budowa gotowej paczki: `npm run deploy:build` → katalog `out/` (samodzielny serwer Node, uruchamiany przez `node server.js`).
+
+Pełna instrukcja wdrożenia i podpięcia MySQL: **[DEPLOY.md](DEPLOY.md)**.
+
 ## Panel admina i baza danych
 
 Panel `/admin` loguje się przez `ADMIN_USERNAME` / `ADMIN_PASSWORD` (plik `.env.local`). Treść strony domyślnie jest trzymana w plikach `data/content.json` i `data/portfolio.json`.
+
+### Zakładka „Teksty”
+
+Pozwala zmienić dowolny tekst widoczny na stronie (nagłówki, opisy usług, kroki procesu, zespół, stopka, dane kontaktowe, tytuł i opis SEO) — osobno po polsku i po angielsku.
+
+- Każde pole jest wypełnione tekstem, który jest aktualnie na stronie — można poprawić pojedynczą literę, nie przepisując całości.
+- Teksty domyślne żyją w `src/i18n/translations.ts`. Panel ich nie nadpisuje — przy zapisie porównuje wartości z domyślnymi i zapisuje tylko **różnice**, jako mapę `"<lang>.<ścieżka>"` → tekst (np. `"pl.hero.line1"`), w `data/content.json` (klucz `texts`) lub w kolumnie `site_content.texts`.
+- „Przywróć domyślny” (pole) i „Przywróć sekcję” cofają zmiany do tekstu z kodu.
+- Pola wspólne dla obu języków (e-mail, telefon, linki social, imiona, SEO) mają w panelu jeden wpis.
+
+#### Automatyczne tłumaczenie na angielski
+
+Po zmianie polskiego tekstu angielski uzupełnia się sam (ok. sekundy po zakończeniu pisania). Ręcznie wpisany angielski nie jest już nadpisywany automatem — do momentu użycia przycisku „Przetłumacz” dla pola lub „Przetłumacz sekcję”. Automat można wyłączyć przełącznikiem w pasku akcji.
+
+Tłumaczy `POST /api/translate` (używa go też sekcja „O mnie” dla bio i nagród):
+
+| Zmienna | Efekt |
+| --- | --- |
+| *(brak)* | MyMemory — darmowe, bez klucza i rejestracji. Limit ok. 5 tys. znaków dziennie na IP. |
+| `MYMEMORY_EMAIL` | Ten sam MyMemory, limit podniesiony do 50 tys. znaków dziennie. |
+| `DEEPL_API_KEY` | DeepL — wyraźnie lepsza polszczyzna, darmowy plan 500 tys. znaków miesięcznie. Gdy zawiedzie, automatycznie wraca do MyMemory. |
+
+Darmowe tłumaczenie maszynowe bywa nieprecyzyjne przy krótkich hasłach bez kontekstu i potrafi pomylić rodzaj gramatyczny („she” / „he”) — warto przejrzeć angielskie pola przed zapisem.
+- Lista pól generuje się automatycznie z `translations.ts` — po dodaniu tam nowego tekstu pojawi się on w panelu bez zmian w kodzie panelu. Etykiety pól można opisać w `src/i18n/text-fields.ts`.
+- Strona renderuje się na żądanie (`dynamic = "force-dynamic"` w `src/app/layout.tsx`), więc zmiany widać od razu po odświeżeniu — bez przebudowy.
+
+Bio i nagrody mają własne zakładki („Bio”, „Nagrody”) i nie dublują się w „Tekstach”.
 
 Po założeniu bazy MySQL na hostingu:
 

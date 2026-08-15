@@ -10,10 +10,9 @@ function checkAuth(request: Request) {
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!checkAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;
-  const body = await request.json();
-  const updated = await updateItem(id, body);
-  if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(updated);
+  const item = await updateItem(id, await request.json());
+  if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json(item);
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {

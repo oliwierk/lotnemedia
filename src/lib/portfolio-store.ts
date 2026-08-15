@@ -1,9 +1,6 @@
-import fs from "fs";
-import path from "path";
-import { RowDataPacket, ResultSetHeader } from "mysql2";
-import { getPool, isDbConfigured } from "./db";
+import { BLOB_PATHS, dataPath, readJsonBlob, writeJsonBlob } from "./blob-store";
 
-const DATA_PATH = path.join(process.cwd(), "data", "portfolio.json");
+/** Galeria realizacji — magazyn działa tak samo jak dla treści (patrz content-store.ts). */
 
 export type PortfolioItem = {
   id: string;
@@ -15,80 +12,41 @@ export type PortfolioItem = {
   thumbnail?: string;
 };
 
-function readJson(): PortfolioItem[] {
-  return JSON.parse(fs.readFileSync(DATA_PATH, "utf-8"));
+export async function readItems(): Promise<PortfolioItem[]> {
+  const items = await readJsonBlob<PortfolioItem[]>(
+    BLOB_PATHS.portfolio,
+    dataPath("portfolio.json"),
+    []
+  );
+  return Array.isArray(items) ? items : [];
 }
 
-function writeJson(data: PortfolioItem[]) {
-  fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2));
-}
-
-function rowToItem(row: RowDataPacket): PortfolioItem {
-  return {
-    id: row.id,
-    type: row.type,
-    title: row.title,
-    category: row.category,
-    youtubeId: row.youtube_id || "",
-    bg: row.bg,
-    thumbnail: row.thumbnail || "",
-  };
-}
-
-export async function listItems(): Promise<PortfolioItem[]> {
-  if (!isDbConfigured()) return readJson();
-  const pool = getPool();
-  const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM portfolio_items ORDER BY created_at ASC");
-  return rows.map(rowToItem);
+async function save(items: PortfolioItem[]): Promise<void> {
+  await writeJsonBlob(BLOB_PATHS.portfolio, dataPath("portfolio.json"), items);
 }
 
 export async function createItem(data: Omit<PortfolioItem, "id">): Promise<PortfolioItem> {
-  const id = `item_${Date.now()}`;
-  const item: PortfolioItem = { ...data, id };
-
-  if (!isDbConfigured()) {
-    const items = readJson();
-    items.push(item);
-    writeJson(items);
-    return item;
-  }
-
-  const pool = getPool();
-  await pool.query(
-    "INSERT INTO portfolio_items (id, type, title, category, youtube_id, bg, thumbnail) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    [id, data.type, data.title, data.category, data.youtubeId || null, data.bg, data.thumbnail || null]
-  );
+  const item: PortfolioItem = { ...data, id: `item_${Date.now()}` };
+  await save([...(await readItems()), item]);
   return item;
 }
 
-export async function updateItem(id: string, data: Omit<PortfolioItem, "id">): Promise<PortfolioItem | null> {
-  if (!isDbConfigured()) {
-    const items = readJson();
-    const idx = items.findIndex((it) => it.id === id);
-    if (idx === -1) return null;
-    items[idx] = { ...items[idx], ...data, id };
-    writeJson(items);
-    return items[idx];
-  }
+export async function updateItem(
+  id: string,
+  data: Omit<PortfolioItem, "id">
+): Promise<PortfolioItem | null> {
+  const items = await readItems();
+  const idx = items.findIndex((it) => it.id === id);
+  if (idx === -1) return null;
 
-  const pool = getPool();
-  const [result] = await pool.query<ResultSetHeader>(
-    "UPDATE portfolio_items SET type=?, title=?, category=?, youtube_id=?, bg=?, thumbnail=? WHERE id=?",
-    [data.type, data.title, data.category, data.youtubeId || null, data.bg, data.thumbnail || null, id]
-  );
-  if (result.affectedRows === 0) return null;
-  return { ...data, id };
+  const item: PortfolioItem = { ...items[idx], ...data, id };
+  items[idx] = item;
+  await save(items);
+  return item;
 }
 
 export async function deleteItem(id: string): Promise<boolean> {
-  if (!isDbConfigured()) {
-    const items = readJson();
-    const filtered = items.filter((it) => it.id !== id);
-    writeJson(filtered);
-    return true;
-  }
-
-  const pool = getPool();
-  await pool.query("DELETE FROM portfolio_items WHERE id=?", [id]);
+  const items = await readItems();
+  await save(items.filter((it) => it.id !== id));
   return true;
 }

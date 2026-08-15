@@ -3,8 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLang } from "@/context/LangContext";
-import { T } from "@/i18n/translations";
+import { useLang, useT } from "@/context/LangContext";
 
 if (typeof window !== "undefined") {
 	gsap.registerPlugin(ScrollTrigger);
@@ -170,8 +169,7 @@ function TeamCard({
 export default function Zespol() {
 	const sectionRef = useRef<HTMLElement>(null);
 	const titleRef = useRef<HTMLDivElement>(null);
-	const { lang } = useLang();
-	const t = T[lang].team;
+	const t = useT().team;
 
 	useEffect(() => {
 		gsap.registerPlugin(ScrollTrigger);

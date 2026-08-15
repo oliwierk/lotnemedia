@@ -3,8 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLang } from "@/context/LangContext";
-import { T } from "@/i18n/translations";
+import { useLang, useT } from "@/context/LangContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -17,8 +16,7 @@ export default function Services() {
   const titleRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [hovered, setHovered] = useState<number | null>(null);
-  const { lang } = useLang();
-  const t = T[lang].services;
+  const t = useT().services;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);

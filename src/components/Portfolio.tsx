@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLang } from "@/context/LangContext";
-import { T } from "@/i18n/translations";
+import { useLang, useT } from "@/context/LangContext";
+import { dataUrl } from "@/lib/api-base";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -131,11 +131,10 @@ export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState<Filter>("Wszystko");
   const [visible, setVisible] = useState(false);
   const [items, setItems] = useState<PortfolioItem[]>([]);
-  const { lang } = useLang();
-  const t = T[lang].portfolio;
+  const t = useT().portfolio;
 
   useEffect(() => {
-    fetch("/api/portfolio").then((r) => r.json()).then(setItems).catch(() => {});
+    fetch(dataUrl("portfolio")).then((r) => r.json()).then(setItems).catch(() => {});
   }, []);
 
   useEffect(() => {

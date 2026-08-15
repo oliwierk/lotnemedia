@@ -46,14 +46,27 @@ async function main() {
   }
   console.log("✓ Schemat utworzony (portfolio_items, site_content).");
 
+  // CREATE TABLE IF NOT EXISTS nie dołoży kolumny do istniejącej tabeli — robimy to osobno.
+  const [textsCol] = await pool.query(
+    "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'site_content' AND COLUMN_NAME = 'texts'"
+  );
+  if (textsCol.length === 0) {
+    await pool.query("ALTER TABLE site_content ADD COLUMN texts JSON");
+    console.log("✓ Dodano kolumnę site_content.texts (teksty z panelu).");
+  }
+
   const content = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", "content.json"), "utf-8"));
   const [existingContent] = await pool.query("SELECT id FROM site_content WHERE id = 1");
   if (existingContent.length === 0) {
-    await pool.query("INSERT INTO site_content (id, bio_short, bio_full, awards) VALUES (1, ?, ?, ?)", [
-      content.bioShort || "",
-      content.bioFull || "",
-      JSON.stringify(content.awards || []),
-    ]);
+    await pool.query(
+      "INSERT INTO site_content (id, bio_short, bio_full, awards, texts) VALUES (1, ?, ?, ?, ?)",
+      [
+        content.bioShort || "",
+        content.bioFull || "",
+        JSON.stringify(content.awards || []),
+        JSON.stringify(content.texts || {}),
+      ]
+    );
     console.log("✓ Zaimportowano treść (bio, nagrody).");
   } else {
     console.log("… site_content już istnieje — pomijam import.");

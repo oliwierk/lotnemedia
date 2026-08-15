@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLang } from "@/context/LangContext";
-import { T } from "@/i18n/translations";
+import { useLang, useT } from "@/context/LangContext";
+import { apiUrl, dataUrl } from "@/lib/api-base";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -22,10 +22,10 @@ export default function About() {
   const [content, setContent] = useState<ContentData>({});
   const [translated, setTranslated] = useState<ContentData>({});
   const { lang } = useLang();
-  const t = T[lang].about;
+  const t = useT().about;
 
   useEffect(() => {
-    fetch("/api/content").then((r) => r.json()).then(setContent).catch(() => {});
+    fetch(dataUrl("content")).then((r) => r.json()).then(setContent).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function About() {
       ...awards.map((a) => a.org),
     ];
 
-    fetch("/api/translate", {
+    fetch(apiUrl("translate"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ texts }),

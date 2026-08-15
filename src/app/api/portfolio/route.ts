@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listItems, createItem } from "@/lib/portfolio-store";
+import { readItems, createItem } from "@/lib/portfolio-store";
 
 function checkAuth(request: Request) {
   const key = request.headers.get("x-admin-key");
@@ -8,13 +8,11 @@ function checkAuth(request: Request) {
 }
 
 export async function GET() {
-  const data = await listItems();
-  return NextResponse.json(data);
+  return NextResponse.json(await readItems());
 }
 
 export async function POST(request: Request) {
   if (!checkAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const body = await request.json();
-  const newItem = await createItem(body);
-  return NextResponse.json(newItem, { status: 201 });
+  const item = await createItem(await request.json());
+  return NextResponse.json(item, { status: 201 });
 }

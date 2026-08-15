@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Katalogi z gotowymi paczkami — zawierają zbudowany kod, nie źródła.
+    "static-site/**",
   ]),
 ]);
 

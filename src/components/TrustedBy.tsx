@@ -3,8 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLang } from "@/context/LangContext";
-import { T } from "@/i18n/translations";
+import { useLang, useT } from "@/context/LangContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -21,15 +20,14 @@ const logos = [
   { src: "/logo ue1.png", alt: "Unia Europejska" },
   { src: "/logo ue2.jpg", alt: "Fundusze Europejskie" },
   { src: "/logo CECC.png", alt: "CECC" },
-  { src: "/Propter tv.jpg", alt: "Propter TV" },
+  { src: "/Proptertv.jpg", alt: "Propter TV" },
 ];
 
 const track = [...logos, ...logos];
 
 export default function TrustedBy() {
   const sectionRef = useRef<HTMLElement>(null);
-  const { lang } = useLang();
-  const t = T[lang].trustedBy;
+  const t = useT().trustedBy;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);

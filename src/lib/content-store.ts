@@ -1,57 +1,48 @@
-import fs from "fs";
-import path from "path";
-import { RowDataPacket } from "mysql2";
-import { getPool, isDbConfigured } from "./db";
+import type { TextOverrides } from "@/i18n/text-fields";
+import { BLOB_PATHS, dataPath, readJsonBlob, writeJsonBlob } from "./blob-store";
 
-const DATA_PATH = path.join(process.cwd(), "data", "content.json");
+/**
+ * Treść strony: bio, nagrody i teksty z panelu.
+ *
+ * Gdzie trafiają dane, zależy od środowiska:
+ *  - Vercel (jest BLOB_READ_WRITE_TOKEN) → Vercel Blob, bo system plików jest tylko do odczytu,
+ *  - lokalnie / własny serwer → plik `data/content.json`.
+ *
+ * Wybór dzieje się w blob-store.ts, tutaj korzystamy z jednego interfejsu.
+ */
 
 export type Award = { year: string; title: string; org: string };
-export type Content = { bioShort: string; bioFull: string; awards: Award[] };
+export type Content = {
+  bioShort: string;
+  bioFull: string;
+  awards: Award[];
+  texts: TextOverrides;
+};
 
-function readJson(): Content {
-  return JSON.parse(fs.readFileSync(DATA_PATH, "utf-8"));
-}
+const EMPTY: Content = { bioShort: "", bioFull: "", awards: [], texts: {} };
 
-function writeJson(data: Content) {
-  fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2));
-}
-
-async function ensureRow() {
-  const pool = getPool();
-  const [rows] = await pool.query<RowDataPacket[]>("SELECT id FROM site_content WHERE id = 1");
-  if (rows.length === 0) {
-    await pool.query("INSERT INTO site_content (id, bio_short, bio_full, awards) VALUES (1, '', '', '[]')");
-  }
-}
-
-export async function getContent(): Promise<Content> {
-  if (!isDbConfigured()) return readJson();
-
-  const pool = getPool();
-  await ensureRow();
-  const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT bio_short, bio_full, awards FROM site_content WHERE id = 1"
+export async function readContent(): Promise<Content> {
+  const data = await readJsonBlob<Partial<Content>>(
+    BLOB_PATHS.content,
+    dataPath("content.json"),
+    EMPTY
   );
-  const row = rows[0];
-  const awards = typeof row.awards === "string" ? JSON.parse(row.awards) : row.awards || [];
-  return { bioShort: row.bio_short || "", bioFull: row.bio_full || "", awards };
+  return { ...EMPTY, ...data };
 }
 
-export async function updateContent(patch: Partial<Content>): Promise<Content> {
-  const current = await getContent();
-  const updated: Content = { ...current, ...patch };
+export type SaveResult = { content: Content; saved: boolean; error?: string };
 
-  if (!isDbConfigured()) {
-    writeJson(updated);
-    return updated;
+export async function saveContent(patch: Partial<Content>): Promise<SaveResult> {
+  const updated: Content = { ...(await readContent()), ...patch };
+  try {
+    await writeJsonBlob(BLOB_PATHS.content, dataPath("content.json"), updated);
+    return { content: updated, saved: true };
+  } catch (err) {
+    console.error("Nie udało się zapisać treści:", err);
+    return {
+      content: updated,
+      saved: false,
+      error: err instanceof Error ? err.message : String(err),
+    };
   }
-
-  const pool = getPool();
-  await ensureRow();
-  await pool.query("UPDATE site_content SET bio_short = ?, bio_full = ?, awards = ? WHERE id = 1", [
-    updated.bioShort,
-    updated.bioFull,
-    JSON.stringify(updated.awards),
-  ]);
-  return updated;
 }

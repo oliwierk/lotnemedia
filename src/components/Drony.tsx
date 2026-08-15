@@ -3,8 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLang } from "@/context/LangContext";
-import { T } from "@/i18n/translations";
+import { useLang, useT } from "@/context/LangContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -15,7 +14,7 @@ export default function Drony() {
   const titleRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const { lang } = useLang();
-  const t = T[lang].drony;
+  const t = useT().drony;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);

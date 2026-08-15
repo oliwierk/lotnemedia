@@ -1,4 +1,71 @@
-export const T = {
+export type ServiceItem = { title: string; desc: string };
+export type ProcessStep = { num: string; title: string; desc: string };
+export type DroneStat = { value: string; label: string };
+export type TeamMember = { name: string; role: string; bio: string };
+
+export type Translations = {
+  nav: { realizacje: string; uslugi: string; drony: string; onas: string; kontakt: string };
+  hero: {
+    line1: string;
+    line2: string;
+    line3: string;
+    subtitle: string;
+    img1: string;
+    img2: string;
+    img3: string;
+  };
+  services: { heading: string; headingItalic: string; label: string; items: ServiceItem[] };
+  portfolio: {
+    heading: string;
+    headingItalic: string;
+    label: string;
+    filters: string[];
+    empty: string;
+    sectionVideo: string;
+    sectionPhoto: string;
+  };
+  process: { heading: string; headingItalic: string; label: string; steps: ProcessStep[] };
+  drony: {
+    heading: string;
+    headingItalic: string;
+    label: string;
+    text1: string;
+    text2: string;
+    stats: DroneStat[];
+  };
+  about: {
+    heading: string;
+    headingItalic: string;
+    label: string;
+    name: string;
+    nameTitle: string;
+    bioShort: string;
+    bioFull: string;
+    readMore: string;
+    collapse: string;
+    awardsLabel: string;
+    scrollHint: string;
+  };
+  team: { heading: string; headingItalic: string; label: string; members: TeamMember[] };
+  trustedBy: { label: string };
+  seo: { title: string; description: string; ogTitle: string; ogDescription: string };
+  contact: {
+    heading: string;
+    headingItalic: string;
+    emailLabel: string;
+    phoneLabel: string;
+    phoneScan: string;
+    socialLabel: string;
+    email: string;
+    phone: string;
+    facebook: string;
+    youtube: string;
+  };
+};
+
+export type Lang = "pl" | "en";
+
+export const T: Record<Lang, Translations> = {
   pl: {
     nav: {
       realizacje: "Realizacje",
@@ -134,6 +201,13 @@ export const T = {
     trustedBy: {
       label: "Zaufali nam",
     },
+    seo: {
+      title: "Lotne Media — Obraz i Dźwięk",
+      description:
+        "Profesjonalna produkcja wideo i foto. Reportaże TVP, podcasty, eventy medialne, fotografia.",
+      ogTitle: "Lotne Media",
+      ogDescription: "Tworzymy Obraz i Dźwięk",
+    },
     contact: {
       heading: "Porozmawiajmy",
       headingItalic: "o projekcie.",
@@ -141,6 +215,10 @@ export const T = {
       phoneLabel: "Telefon",
       phoneScan: "Zeskanuj, aby zadzwonić",
       socialLabel: "Social media",
+      email: "kontakt@lotnemedia.pl",
+      phone: "+48 512 555 780",
+      facebook: "#",
+      youtube: "#",
     },
   },
 
@@ -279,6 +357,13 @@ export const T = {
     trustedBy: {
       label: "Trusted by",
     },
+    seo: {
+      title: "Lotne Media — Obraz i Dźwięk",
+      description:
+        "Profesjonalna produkcja wideo i foto. Reportaże TVP, podcasty, eventy medialne, fotografia.",
+      ogTitle: "Lotne Media",
+      ogDescription: "Tworzymy Obraz i Dźwięk",
+    },
     contact: {
       heading: "Let's talk",
       headingItalic: "about your project.",
@@ -286,8 +371,10 @@ export const T = {
       phoneLabel: "Phone",
       phoneScan: "Scan to call",
       socialLabel: "Social media",
+      email: "kontakt@lotnemedia.pl",
+      phone: "+48 512 555 780",
+      facebook: "#",
+      youtube: "#",
     },
   },
-} as const;
-
-export type Lang = keyof typeof T;
+};

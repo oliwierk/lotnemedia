@@ -13,5 +13,6 @@ CREATE TABLE IF NOT EXISTS site_content (
   id TINYINT PRIMARY KEY DEFAULT 1,
   bio_short TEXT,
   bio_full TEXT,
-  awards JSON
+  awards JSON,
+  texts JSON
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

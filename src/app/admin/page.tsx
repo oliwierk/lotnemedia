@@ -1,6 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { Translations } from "@/i18n/translations";
+import { apiUrl, apiItemUrl, apiItemMethod } from "@/lib/api-base";
+import {
+  SECTIONS,
+  defaultValues,
+  sectionFields,
+  type TextField,
+  type TextOverrides,
+} from "@/i18n/text-fields";
 
 /* ─── types ─── */
 type PortfolioItem = {
@@ -19,10 +28,11 @@ type Content = {
   bioShort: string;
   bioFull: string;
   awards: Award[];
+  texts?: TextOverrides;
 };
 
 const CATEGORIES = ["Film", "Podcast", "Event", "Foto", "Dron"];
-const TABS = ["Galeria", "Bio", "Nagrody"] as const;
+const TABS = ["Galeria", "Teksty", "Bio", "Nagrody"] as const;
 type Tab = (typeof TABS)[number];
 
 /* ─── style helpers ─── */
@@ -101,7 +111,7 @@ function LoginScreen({ onAuth }: { onAuth: (pw: string) => void }) {
     e.preventDefault();
     setLoading(true);
     setErr("");
-    const res = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: user, password: pw }) });
+    const res = await fetch(apiUrl("auth"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: user, password: pw }) });
     setLoading(false);
     if (res.ok) { onAuth(pw); } else { setErr("Nieprawidłowy użytkownik lub hasło"); }
   }
@@ -139,7 +149,7 @@ function ThumbField({ value, onChange, adminKey }: { value: string; onChange: (u
     setUploading(true);
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", headers: { "x-admin-key": adminKey }, body: fd });
+    const res = await fetch(apiUrl("upload"), { method: "POST", headers: { "x-admin-key": adminKey }, body: fd });
     const { url } = await res.json();
     onChange(url);
     setUploading(false);
@@ -222,17 +232,18 @@ function GaleriaTab({ adminKey }: { adminKey: string }) {
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [modal, setModal] = useState<"add" | PortfolioItem | null>(null);
 
-  useEffect(() => { fetch("/api/portfolio").then((r) => r.json()).then(setItems); }, []);
+  useEffect(() => { fetch(apiUrl("portfolio")).then((r) => r.json()).then(setItems); }, []);
 
   async function handleAdd(data: Omit<PortfolioItem, "id">) {
-    const res = await fetch("/api/portfolio", { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify(data) });
+    const res = await fetch(apiUrl("portfolio"), { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify(data) });
     const item = await res.json();
+    if (item.dbSynced === false) alert("Zapisano na stronie, ale baza jest niedostępna — zmiana może zniknąć po wgraniu nowej wersji.");
     setItems((p) => [...p, item]);
     setModal(null);
   }
 
   async function handleEdit(id: string, data: Omit<PortfolioItem, "id">) {
-    const res = await fetch(`/api/portfolio/${id}`, { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify(data) });
+    const res = await fetch(apiItemUrl(id, "PUT"), { method: apiItemMethod("PUT"), headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify(data) });
     const updated = await res.json();
     setItems((p) => p.map((it) => (it.id === id ? updated : it)));
     setModal(null);
@@ -240,7 +251,7 @@ function GaleriaTab({ adminKey }: { adminKey: string }) {
 
   async function handleDelete(id: string) {
     if (!confirm("Usunąć tę pozycję?")) return;
-    await fetch(`/api/portfolio/${id}`, { method: "DELETE", headers: { "x-admin-key": adminKey } });
+    await fetch(apiItemUrl(id, "DELETE"), { method: apiItemMethod("DELETE"), headers: { "x-admin-key": adminKey } });
     setItems((p) => p.filter((it) => it.id !== id));
   }
 
@@ -286,6 +297,363 @@ function GaleriaTab({ adminKey }: { adminKey: string }) {
   );
 }
 
+/* ─── Teksty tab ─── */
+function sectionChipStyle(active: boolean): React.CSSProperties {
+  return {
+    padding: "7px 14px", borderRadius: 999, fontSize: 12, cursor: "pointer",
+    border: active ? "1px solid rgba(242,237,232,0.35)" : "1px solid rgba(255,255,255,0.09)",
+    background: active ? "rgba(242,237,232,0.1)" : "transparent",
+    color: active ? "#f2ede8" : "rgba(242,237,232,0.5)",
+    transition: "all 0.18s ease", whiteSpace: "nowrap",
+  };
+}
+
+const fieldStyles: Record<string, React.CSSProperties> = {
+  row: { padding: "18px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)" },
+  head: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 },
+  name: { fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(242,237,232,0.6)" },
+  changed: { fontSize: 10, color: "#d4a843", letterSpacing: "0.08em", textTransform: "uppercase" },
+  langCol: { flex: 1, minWidth: 220 },
+  langTag: { fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(242,237,232,0.3)", marginBottom: 5, display: "block" },
+  groupHead: { fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(242,237,232,0.35)", padding: "20px 20px 6px", background: "rgba(255,255,255,0.02)" },
+  reset: { background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "rgba(242,237,232,0.4)", textDecoration: "underline", padding: 0 },
+};
+
+/** Polska odmiana: 1 pole, 2–4 pola, 5+ pól. */
+function zmienionePola(n: number): string {
+  const last = n % 10;
+  const lastTwo = n % 100;
+  if (n === 1) return "1 zmienione pole";
+  if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) return `${n} zmienione pola`;
+  return `${n} zmienionych pól`;
+}
+
+function TekstyTab({ adminKey }: { adminKey: string }) {
+  const [section, setSection] = useState<keyof Translations>("hero");
+  /** Pełne teksty wszystkich pól, klucz "pl.hero.line1". Startują z wartości domyślnych. */
+  const [values, setValues] = useState<TextOverrides>({});
+  const [loaded, setLoaded] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [autoTranslate, setAutoTranslate] = useState(true);
+  const [translating, setTranslating] = useState<string[]>([]);
+  const [translateError, setTranslateError] = useState("");
+  const [dbWarning, setDbWarning] = useState("");
+
+  const defaults = useMemo(() => defaultValues(), []);
+  const fields = useMemo(() => sectionFields(section), [section]);
+  const meta = SECTIONS.find((s) => s.key === section);
+
+  /** Pola, w których angielski wpisano ręcznie — automat ich nie nadpisuje. */
+  const manualEn = useRef<Set<string>>(new Set());
+  const timers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+
+  useEffect(() => {
+    fetch(apiUrl("content"))
+      .then((r) => r.json())
+      .then((d: Content) => {
+        const stored = d.texts || {};
+        setValues({ ...defaults, ...stored });
+        // Zapisany angielski traktujemy jak ręczny, żeby go nie nadpisać automatem.
+        for (const [key, value] of Object.entries(stored)) {
+          if (key.startsWith("en.") && value !== defaults[key]) manualEn.current.add(key.slice(3));
+        }
+        setLoaded(true);
+      });
+  }, [defaults]);
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => pending.forEach((timer) => clearTimeout(timer));
+  }, []);
+
+  function setValue(key: string, value: string) {
+    setValues((prev) => ({ ...prev, [key]: value }));
+    setDirty(true);
+    setSaved(false);
+  }
+
+  /** Tłumaczy podane teksty PL → EN i wstawia wynik do pól angielskich. */
+  async function runTranslate(entries: { path: string; text: string }[]) {
+    const todo = entries.filter((e) => e.text.trim() !== "");
+    if (todo.length === 0) return;
+
+    setTranslating((prev) => [...prev, ...todo.map((e) => e.path)]);
+    setTranslateError("");
+    try {
+      const res = await fetch(apiUrl("translate"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ texts: todo.map((e) => e.text) }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const { translations } = (await res.json()) as { translations?: (string | null)[] };
+      if (!translations) throw new Error("brak tłumaczeń");
+
+      const done: Record<string, string> = {};
+      todo.forEach((entry, i) => {
+        const out = translations[i];
+        if (typeof out === "string" && out.trim() !== "") {
+          done[`en.${entry.path}`] = out;
+          manualEn.current.delete(entry.path);
+        }
+      });
+
+      if (Object.keys(done).length === 0) {
+        setTranslateError("Nie udało się przetłumaczyć — wpisz angielski ręcznie.");
+        return;
+      }
+      setValues((prev) => ({ ...prev, ...done }));
+      setDirty(true);
+      setSaved(false);
+      if (Object.keys(done).length < todo.length) {
+        setTranslateError("Część tekstów się nie przetłumaczyła — sprawdź je przed zapisem.");
+      }
+    } catch {
+      setTranslateError("Tłumaczenie niedostępne — wpisz angielski ręcznie.");
+    } finally {
+      const paths = todo.map((e) => e.path);
+      setTranslating((prev) => prev.filter((p) => !paths.includes(p)));
+    }
+  }
+
+  function handlePlChange(f: TextField, value: string) {
+    setValue(`pl.${f.path}`, value);
+    // Pola wspólne (e-mail, SEO, imiona) mają tę samą wartość w obu językach.
+    if (f.shared) {
+      setValue(`en.${f.path}`, value);
+      return;
+    }
+    if (!autoTranslate || manualEn.current.has(f.path)) return;
+
+    const pending = timers.current.get(f.path);
+    if (pending) clearTimeout(pending);
+    timers.current.set(
+      f.path,
+      setTimeout(() => {
+        timers.current.delete(f.path);
+        runTranslate([{ path: f.path, text: value }]);
+      }, 900)
+    );
+  }
+
+  function handleEnChange(f: TextField, value: string) {
+    manualEn.current.add(f.path);
+    const pending = timers.current.get(f.path);
+    if (pending) {
+      clearTimeout(pending);
+      timers.current.delete(f.path);
+    }
+    setValue(`en.${f.path}`, value);
+  }
+
+  function resetField(f: TextField) {
+    manualEn.current.delete(f.path);
+    setValues((prev) => ({
+      ...prev,
+      [`pl.${f.path}`]: f.defaults.pl,
+      [`en.${f.path}`]: f.defaults.en,
+    }));
+    setDirty(true);
+    setSaved(false);
+  }
+
+  function resetSection() {
+    if (!confirm(`Przywrócić domyślne teksty w sekcji „${meta?.label}”?`)) return;
+    setValues((prev) => {
+      const next = { ...prev };
+      for (const f of fields) {
+        manualEn.current.delete(f.path);
+        next[`pl.${f.path}`] = f.defaults.pl;
+        next[`en.${f.path}`] = f.defaults.en;
+      }
+      return next;
+    });
+    setDirty(true);
+    setSaved(false);
+  }
+
+  function translateSection() {
+    const targets = fields.filter((f) => !f.shared);
+    if (!confirm(`Przetłumaczyć całą sekcję „${meta?.label}”? Angielskie teksty zostaną nadpisane.`))
+      return;
+    runTranslate(targets.map((f) => ({ path: f.path, text: values[`pl.${f.path}`] || "" })));
+  }
+
+  async function handleSave() {
+    // Zapisujemy tylko to, co różni się od tekstów domyślnych z translations.ts.
+    const texts: TextOverrides = {};
+    for (const [key, value] of Object.entries(values)) {
+      if (defaults[key] === undefined) continue;
+      if (value !== defaults[key]) texts[key] = value;
+    }
+
+    setSaving(true);
+    const res = await fetch(apiUrl("content"), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+      body: JSON.stringify({ texts }),
+    });
+    setSaving(false);
+    if (!res.ok) {
+      alert("Nie udało się zapisać zmian.");
+      return;
+    }
+    // Treść zapisuje się w pliku zawsze; baza to trwała kopia i może być chwilowo niedostępna.
+    const result = await res.json().catch(() => null);
+    setDbWarning(
+      result && result.dbSynced === false
+        ? "Zapisano na stronie, ale nie udało się zapisać do bazy. Zmiana może zniknąć po wgraniu nowej wersji."
+        : ""
+    );
+    setDirty(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  }
+
+  const changedInSection = fields.filter(
+    (f) => values[`pl.${f.path}`] !== f.defaults.pl || values[`en.${f.path}`] !== f.defaults.en
+  ).length;
+
+  if (!loaded) return <p style={{ fontSize: 13, color: "rgba(242,237,232,0.4)" }}>Wczytuję teksty…</p>;
+
+  return (
+    <div style={{ maxWidth: 900 }}>
+      <p style={{ fontSize: 13, color: "rgba(242,237,232,0.45)", lineHeight: 1.6, marginBottom: 18 }}>
+        Każde pole zawiera tekst, który jest teraz na stronie — możesz poprawić choćby jedną literę.
+        Angielska wersja tłumaczy się sama, ale zawsze możesz ją nadpisać ręcznie.
+      </p>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
+        {SECTIONS.map((s) => (
+          <button key={s.key} style={sectionChipStyle(section === s.key)} onClick={() => setSection(s.key)}>
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Pasek akcji */}
+      <div
+        style={{
+          display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
+          padding: "14px 20px", background: "#161616", border: "1px solid rgba(255,255,255,0.07)",
+          borderRadius: 8, marginBottom: 12, position: "sticky", top: 61, zIndex: 5,
+        }}
+      >
+        <button style={btnStyle("primary")} onClick={handleSave} disabled={saving || !dirty}>
+          {saving ? "Zapisuję…" : "Zapisz zmiany"}
+        </button>
+        {dirty && !saving && <span style={{ fontSize: 12, color: "#d4a843" }}>Niezapisane zmiany</span>}
+        {saved && <span style={{ fontSize: 12, color: "#6db56d" }}>Zapisano ✓</span>}
+
+        <label style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: "rgba(242,237,232,0.55)", cursor: "pointer" }}>
+          <input type="checkbox" checked={autoTranslate} onChange={(e) => setAutoTranslate(e.target.checked)} />
+          Tłumacz automatycznie na angielski
+        </label>
+
+        <div style={{ flex: 1 }} />
+        <span style={{ fontSize: 12, color: "rgba(242,237,232,0.4)" }}>
+          {changedInSection > 0 ? zmienionePola(changedInSection) : "Wszystko domyślne"}
+        </span>
+        <button style={fieldStyles.reset} onClick={translateSection} disabled={translating.length > 0}>
+          {translating.length > 0 ? "Tłumaczę…" : "Przetłumacz sekcję"}
+        </button>
+        {changedInSection > 0 && (
+          <button style={fieldStyles.reset} onClick={resetSection}>
+            Przywróć sekcję
+          </button>
+        )}
+      </div>
+
+      {translateError && (
+        <p style={{ fontSize: 12, color: "#e0a555", marginBottom: 12 }}>{translateError}</p>
+      )}
+      {dbWarning && (
+        <p style={{ fontSize: 12, color: "#e0a555", marginBottom: 12 }}>⚠ {dbWarning}</p>
+      )}
+      {meta?.hint && (
+        <p style={{ fontSize: 12, color: "rgba(242,237,232,0.35)", marginBottom: 12 }}>{meta.hint}</p>
+      )}
+
+      <div style={{ ...S.card, marginBottom: 40 }}>
+        {fields.map((f, i) => {
+          const plValue = values[`pl.${f.path}`] ?? "";
+          const enValue = values[`en.${f.path}`] ?? "";
+          const changed = plValue !== f.defaults.pl || enValue !== f.defaults.en;
+          const showGroup = f.group && f.group !== fields[i - 1]?.group;
+          const busy = translating.includes(f.path);
+
+          const Field = f.multiline ? "textarea" : "input";
+          const fieldStyle = f.multiline ? { ...S.textarea, minHeight: 84, fontSize: 13 } : { ...S.input, fontSize: 13 };
+
+          return (
+            <div key={f.path}>
+              {showGroup && <p style={fieldStyles.groupHead}>{f.group}</p>}
+              <div style={fieldStyles.row}>
+                <div style={fieldStyles.head}>
+                  <span style={fieldStyles.name}>{f.label}</span>
+                  {changed && <span style={fieldStyles.changed}>zmienione</span>}
+                  <div style={{ flex: 1 }} />
+                  {changed && (
+                    <button style={fieldStyles.reset} onClick={() => resetField(f)}>
+                      Przywróć domyślny
+                    </button>
+                  )}
+                </div>
+
+                {f.shared ? (
+                  <Field
+                    style={fieldStyle}
+                    value={plValue}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                      handlePlChange(f, e.target.value)
+                    }
+                  />
+                ) : (
+                  <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                    <div style={fieldStyles.langCol}>
+                      <span style={fieldStyles.langTag}>Polski</span>
+                      <Field
+                        style={fieldStyle}
+                        value={plValue}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                          handlePlChange(f, e.target.value)
+                        }
+                      />
+                    </div>
+                    <div style={fieldStyles.langCol}>
+                      <span style={{ ...fieldStyles.langTag, display: "flex", alignItems: "center", gap: 8 }}>
+                        English
+                        {busy && <span style={{ color: "#d4a843" }}>tłumaczę…</span>}
+                        <span style={{ flex: 1 }} />
+                        <button
+                          style={{ ...fieldStyles.reset, fontSize: 10, textTransform: "none", letterSpacing: 0 }}
+                          onClick={() => runTranslate([{ path: f.path, text: plValue }])}
+                          disabled={busy}
+                        >
+                          Przetłumacz
+                        </button>
+                      </span>
+                      <Field
+                        style={{ ...fieldStyle, opacity: busy ? 0.5 : 1 }}
+                        value={enValue}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                          handleEnChange(f, e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ─── Bio tab ─── */
 function BioTab({ adminKey }: { adminKey: string }) {
   const [bioShort, setBioShort] = useState("");
@@ -294,7 +662,7 @@ function BioTab({ adminKey }: { adminKey: string }) {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    fetch("/api/content").then((r) => r.json()).then((d: Content) => {
+    fetch(apiUrl("content")).then((r) => r.json()).then((d: Content) => {
       setBioShort(d.bioShort || "");
       setBioFull(d.bioFull || "");
     });
@@ -302,7 +670,7 @@ function BioTab({ adminKey }: { adminKey: string }) {
 
   async function handleSave() {
     setSaving(true);
-    await fetch("/api/content", { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify({ bioShort, bioFull }) });
+    await fetch(apiUrl("content"), { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify({ bioShort, bioFull }) });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -362,12 +730,12 @@ function NagrodaTab({ adminKey }: { adminKey: string }) {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    fetch("/api/content").then((r) => r.json()).then((d: Content) => setAwards(d.awards || []));
+    fetch(apiUrl("content")).then((r) => r.json()).then((d: Content) => setAwards(d.awards || []));
   }, []);
 
   async function saveAwards(updated: Award[]) {
     setSaving(true);
-    await fetch("/api/content", { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify({ awards: updated }) });
+    await fetch(apiUrl("content"), { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-key": adminKey }, body: JSON.stringify({ awards: updated }) });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -462,6 +830,7 @@ export default function AdminPage() {
         </div>
         <div style={S.content}>
           {activeTab === "Galeria" && <GaleriaTab adminKey={adminKey} />}
+          {activeTab === "Teksty" && <TekstyTab adminKey={adminKey} />}
           {activeTab === "Bio" && <BioTab adminKey={adminKey} />}
           {activeTab === "Nagrody" && <NagrodaTab adminKey={adminKey} />}
         </div>
